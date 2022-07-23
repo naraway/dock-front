@@ -26,13 +26,13 @@ export const devauth = {
 
 export const devdock = {
   dock,
-  currentPavilion: dock.pavilion,
-  currentCitizen: dock.citizen,
-  currentCineroom: dock.cinerooms[0].cineroom,
-  currentAudience: dock.cinerooms[0].audience,
-  currentStage: dock.cinerooms[0].stages[0].stage,
-  currentActor: dock.cinerooms[0].stages[0].actor,
-  currentKollection: dock.cinerooms[0].stages[0].kollections[0].kollection,
-  currentStageRoles: dock.cinerooms[0].stages[0].kollections[0].stageRoles.map(role => role.code),
-  currentDramaRoles: dock.cinerooms[0].stages[0].kollections[0].stageRoles[0].dramaRoles.map(role => role.code),
+  activePavilion: dock.pavilion,
+  activeCitizen: dock.citizen,
+  activeCineroom: dock.cinerooms[0].cineroom,
+  activeAudience: dock.cinerooms[0].audience,
+  activeStage: dock.cinerooms[0].stages[0].stage,
+  activeActor: dock.cinerooms[0].stages[0].actor,
+  activeKollection: dock.cinerooms[0].stages[0].kollections[0].kollection,
+  activeStageRoles: dock.cinerooms[0].stages[0].kollections[0].stageRoles.map(role => role.code),
+  activeDramaRoles: dock.cinerooms[0].stages[0].kollections[0].stageRoles[0].dramaRoles.map(role => role.code),
 };
