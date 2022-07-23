@@ -5,8 +5,8 @@ import {
   Cineroom,
   ContextSeekApiStub,
   ContextFlowApiStub,
-  FindCurrentAudienceQuery,
-  FindCurrentCineroomQuery,
+  FindActiveAudienceQuery,
+  FindActiveCineroomQuery,
   FindDefaultCineroomQuery,
 } from '../../../../api';
 
@@ -59,8 +59,8 @@ class CineroomContextFlowStateKeeper {
   }
 
   async findCurrentAudience(citizenId: string): Promise<Audience | null> {
-    const query = FindCurrentAudienceQuery.by(citizenId);
-    const currentAudience = await this.contextSeekApiStub.findCurrentAudience(query);
+    const query = FindActiveAudienceQuery.by(citizenId);
+    const currentAudience = await this.contextSeekApiStub.findActiveAudience(query);
 
     runInAction(() => {
       this.currentAudience = currentAudience;
@@ -69,8 +69,8 @@ class CineroomContextFlowStateKeeper {
   }
 
   async findCurrentCineroom(citizenId: string): Promise<Cineroom | null> {
-    const query = FindCurrentCineroomQuery.by(citizenId);
-    const currentCineroom = await this.contextSeekApiStub.findCurrentCineroom(query);
+    const query = FindActiveCineroomQuery.by(citizenId);
+    const currentCineroom = await this.contextSeekApiStub.findActiveCineroom(query);
 
     runInAction(() => {
       this.currentCineroom = currentCineroom;

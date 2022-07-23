@@ -1,4 +1,4 @@
-class Current {
+class ActiveInfo {
   id: string;
   name: string;
 
@@ -7,16 +7,16 @@ class Current {
     this.name = name;
   }
 
-  static fromDomain(domain: Current) {
-    return new Current(
+  static fromDomain(domain: ActiveInfo) {
+    return new ActiveInfo(
       domain.id,
       domain.name,
     );
   }
 
-  static new(): Current {
-    return new Current('', '');
+  static new(): ActiveInfo {
+    return new ActiveInfo('', '');
   }
 }
 
-export default Current;
+export default ActiveInfo;

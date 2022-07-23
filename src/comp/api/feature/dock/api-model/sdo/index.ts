@@ -1,1 +1,1 @@
-export { default as AvailableDockRdo } from './AvailableDockRdo';
+export { default as ActiveDockRdo} from './ActiveDockRdo';

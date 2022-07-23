@@ -1,18 +1,18 @@
 class HomeStage {
-  stageId: string;
-  stageName: string;
+  id: string;
+  name: string;
   time: number;
 
-  constructor(stageId: string, stageName: string, time: number) {
-    this.stageId = stageId;
-    this.stageName = stageName;
+  constructor(id: string, name: string, time: number) {
+    this.id = id;
+    this.name = name;
     this.time = time;
   }
 
   static fromDomain(domain: HomeStage): HomeStage {
     const homeStage = new HomeStage(
-      domain.stageId,
-      domain.stageName,
+      domain.id,
+      domain.name,
       domain.time,
     );
 

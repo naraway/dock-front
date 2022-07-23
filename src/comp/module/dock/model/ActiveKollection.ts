@@ -1,4 +1,4 @@
-class CurrentKollection {
+class ActiveKollection {
   id: string;
   name: string;
   path: string;
@@ -9,17 +9,17 @@ class CurrentKollection {
     this.path = path;
   }
 
-  static fromDomain(domain: CurrentKollection) {
-    return new CurrentKollection(
+  static fromDomain(domain: ActiveKollection) {
+    return new ActiveKollection(
       domain.id,
       domain.name,
       domain.path,
     );
   }
 
-  static new(): CurrentKollection {
-    return new CurrentKollection('', '', '');
+  static new(): ActiveKollection {
+    return new ActiveKollection('', '', '');
   }
 }
 
-export default CurrentKollection;
+export default ActiveKollection;

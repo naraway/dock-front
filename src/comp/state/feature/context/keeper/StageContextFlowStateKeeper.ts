@@ -3,8 +3,8 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import {
   Actor,
   ContextFlowApiStub,
-  FindCurrentActorQuery,
-  FindCurrentStageQuery,
+  FindActiveActorQuery,
+  FindActiveStageQuery,
   Stage,
   ContextSeekApiStub,
 } from '../../../../api';
@@ -74,8 +74,8 @@ class StageContextFlowStateKeeper {
   }
 
   async findCurrentActor(audienceId: string): Promise<Actor | null> {
-    const query = FindCurrentActorQuery.by(audienceId);
-    const currentActor = await this.contextSeekApiStub.findCurrentActor(query);
+    const query = FindActiveActorQuery.by(audienceId);
+    const currentActor = await this.contextSeekApiStub.findActiveActor(query);
 
     runInAction(() => {
       this.currentActor = currentActor;
@@ -84,8 +84,8 @@ class StageContextFlowStateKeeper {
   }
 
   async findCurrentStage(audienceId: string): Promise<Stage | null> {
-    const query = FindCurrentStageQuery.by(audienceId);
-    const currentStage = await this.contextSeekApiStub.findCurrentStage(query);
+    const query = FindActiveStageQuery.by(audienceId);
+    const currentStage = await this.contextSeekApiStub.findActiveStage(query);
 
     runInAction(() => {
       this.currentStage = currentStage;
@@ -94,7 +94,7 @@ class StageContextFlowStateKeeper {
   }
 
   async findDefaultStage(audienceId: string): Promise<Stage | null> {
-    const query = FindCurrentStageQuery.by(audienceId);
+    const query = FindActiveStageQuery.by(audienceId);
     const defaultStage = await this.contextSeekApiStub.findDefaultStage(query);
 
     runInAction(() => {

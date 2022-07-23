@@ -1,28 +1,25 @@
-import { StageNode, StageNodeType } from './vo';
+import { StageNode, StageNodeType } from '../vo';
 
 class CineroomChartTreeRdo {
   //
   id: string;
   name: string;
   type: StageNodeType;
-  townSpace: boolean;
-  gallerySpace: boolean;
+  base: boolean;
   children: StageNode[];
 
   constructor(
     id: string,
     name: string,
     type: StageNodeType,
-    townSpace: boolean,
-    gallerySpace: boolean,
+    base: boolean,
     children: StageNode[],
   ) {
     //
     this.id = id;
     this.name = name;
     this.type = type;
-    this.townSpace = townSpace;
-    this.gallerySpace = gallerySpace;
+    this.base = base;
     this.children = children;
   }
 
@@ -32,8 +29,7 @@ class CineroomChartTreeRdo {
       domain.id,
       domain.name,
       domain.type,
-      domain.townSpace,
-      domain.gallerySpace,
+      domain.base,
       domain.children,
     );
 
@@ -47,7 +43,7 @@ class CineroomChartTreeRdo {
 
   static new(): CineroomChartTreeRdo {
     //
-    return new CineroomChartTreeRdo('', '', StageNodeType.BackStage, false, false,[]);
+    return new CineroomChartTreeRdo('', '', StageNodeType.BackStage, false, []);
   }
 }
 

@@ -1,6 +1,6 @@
 import { Box, useTheme } from '@mui/material';
 import React from 'react';
-import { CurrentStage } from '../../../module';
+import { ActiveStage } from '../../../module';
 import WorkspaceView from './view/WorkspaceView';
 
 
@@ -8,11 +8,11 @@ const DockDialContainer =
   ({
      onLogin = () => undefined,
      onLogout = () => undefined,
-     onStage = (stage: CurrentStage) => undefined,
+     onStage = (stage: ActiveStage) => undefined,
    }: {
     onLogin?: () => void,
     onLogout?: () => void,
-    onStage?: (stage: CurrentStage) => void,
+    onStage?: (stage: ActiveStage) => void,
   }) => {
     const theme = useTheme();
 

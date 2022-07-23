@@ -1,3 +1,3 @@
-export { default as Current } from './Current';
-export { default as CurrentStage } from './CurrentStage';
-export { default as CurrentKollection } from './CurrentKollection';
+export { default as ActiveInfo } from './ActiveInfo';
+export { default as ActiveStage } from './ActiveStage';
+export { default as ActiveKollection } from './ActiveKollection';

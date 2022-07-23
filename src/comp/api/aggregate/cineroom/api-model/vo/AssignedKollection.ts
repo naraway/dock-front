@@ -1,21 +1,33 @@
-import { KollectionRole } from './index';
-import { DramaRole } from "@nara-way/accent";
+import { DramaRole, Kollectie, KollectionRole } from '@nara-way/accent';
 
 class AssignedKollection {
   kollectionVersionId: string;
   name: string;
   usid: string;
+  path: string;
   version: string;
-  stageRoles: KollectionRole[];
-  dramaRoles: DramaRole[];
+  builtin: boolean;
+  kollecties: Kollectie[];
+  kollectionRoles: KollectionRole[];
 
-  constructor(kollectionVersionId: string, name: string, usid: string, version: string, stageRoles: KollectionRole[], dramaRoles: DramaRole[]) {
+  constructor(
+    kollectionVersionId: string,
+    name: string,
+    usid: string,
+    path: string,
+    version: string,
+    builtin: boolean,
+    kollecties: Kollectie[],
+    kollectionRoles: KollectionRole[],
+  ) {
     this.kollectionVersionId = kollectionVersionId;
     this.name = name;
     this.usid = usid;
+    this.path = path;
     this.version = version;
-    this.stageRoles = stageRoles;
-    this.dramaRoles = dramaRoles;
+    this.builtin = builtin;
+    this.kollecties = kollecties;
+    this.kollectionRoles = kollectionRoles;
   }
 
   static fromDomain(domain: AssignedKollection): AssignedKollection {
@@ -23,9 +35,11 @@ class AssignedKollection {
       domain.kollectionVersionId,
       domain.name,
       domain.usid,
+      domain.path,
       domain.version,
-      domain.stageRoles,
-      domain.dramaRoles,
+      domain.builtin,
+      domain.kollecties,
+      domain.kollectionRoles,
     );
 
     return assignedKollection;

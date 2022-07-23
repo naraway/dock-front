@@ -15,18 +15,18 @@ import {
 import { Box, Button, Divider, IconButton, Popover, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import { TenantType } from '@nara-way/accent';
 import React, { useEffect, useState } from 'react';
-import { CurrentStage, useAuth, useDock } from '../../../../module';
+import { ActiveStage, useAuth, useDock } from '../../../../module';
 import { TreeItem } from '../model';
 import DefaultStageDialogView from './DefaultStageDialogView';
 
 
 const WorkspaceView =
   ({
-     onStage = (stage: CurrentStage) => undefined,
+     onStage = (stage: ActiveStage) => undefined,
      onLogout = () => undefined,
      onLogin = () => undefined,
    }: {
-    onStage?: (stage: CurrentStage) => void,
+    onStage?: (stage: ActiveStage) => void,
     onLogout?: () => void,
     onLogin?: () => void,
   }) => {
@@ -49,7 +49,7 @@ const WorkspaceView =
     });
 
     useEffect(() => {
-    }, [dock.currentStage]);
+    }, [dock.activeStage]);
 
     const handleWorkspaceContext = async (event: any) => {
       await setState({ ...state, anchorEl: event.target as HTMLButtonElement, open: !state.open });
@@ -67,7 +67,7 @@ const WorkspaceView =
       }
     };
 
-    const handleClickStage = async (stage: CurrentStage | undefined) => {
+    const handleClickStage = async (stage: ActiveStage | undefined) => {
       if (!stage) {
         return;
       }
@@ -107,11 +107,11 @@ const WorkspaceView =
         children: [],
       };
 
-      if (!dock || !dock.availableDock) {
+      if (!dock || !dock.activeDock) {
         return tree;
       }
 
-      const space = dock.availableDock;
+      const space = dock.activeDock;
 
       const pavilion = space.pavilion;
       if (pavilion) {
@@ -190,13 +190,13 @@ const WorkspaceView =
     };
 
     const findStage = (stageId: string) => {
-      let stage: CurrentStage | undefined;
+      let stage: ActiveStage | undefined;
 
-      if (dock.availableDock) {
-        dock.availableDock.cinerooms.some(cineroom => {
+      if (dock.activeDock) {
+        dock.activeDock.cinerooms.some(cineroom => {
           return cineroom.stages.some(item => {
             if (item.stage.id === stageId) {
-              stage = new CurrentStage(item.stage.id, item.stage.name, item.kollections);
+              stage = new ActiveStage(item.stage.id, item.stage.name, item.kollections);
               return true;
             }
           });
@@ -209,7 +209,7 @@ const WorkspaceView =
     const renderTree = (tree: TreeItem) => {
       if (tree.type === TenantType.Stage) {
         return (
-          tree.id === dock.currentStage?.id ? (
+          tree.id === dock.activeStage?.id ? (
             <Box
               key={tree.id}
               style={{
@@ -221,7 +221,7 @@ const WorkspaceView =
             >
               <Typography
                 style={{
-                  cursor: tree.id === dock.currentStage?.id ? 'default' : 'pointer',
+                  cursor: tree.id === dock.activeStage?.id ? 'default' : 'pointer',
                   display: 'inline-block',
                   fontSize: '14px',
                   marginLeft: theme.spacing(7),
@@ -260,7 +260,7 @@ const WorkspaceView =
               >
                 <Typography
                   style={{
-                    cursor: tree.id === dock.currentStage?.id ? 'default' : 'pointer',
+                    cursor: tree.id === dock.activeStage?.id ? 'default' : 'pointer',
                     display: 'inline-block',
                     fontSize: '14px',
                     marginLeft: theme.spacing(4),
@@ -344,7 +344,7 @@ const WorkspaceView =
           onClick={handleClose}
           onClose={handleClose}
         >
-          {auth && auth.loggedIn && dock && dock.currentCineroom && dock.currentStage && (
+          {auth && auth.loggedIn && dock && dock.activeCineroom && dock.activeStage && (
             <>
               <Box
                 display={'flex'}
@@ -364,7 +364,7 @@ const WorkspaceView =
                 >
                   <PictureInPictureAltOutlined sx={{ marginLeft: 1, marginRight: 2 }}/>
                   <Typography variant={'body2'}>
-                    {`${dock.currentCineroom.name} > ${dock.currentStage.name}`}
+                    {`${dock.activeCineroom.name} > ${dock.activeStage.name}`}
                   </Typography>
                 </Box>
                 <Tooltip title={'Set default...'}>

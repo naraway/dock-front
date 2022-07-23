@@ -1,9 +1,9 @@
 import { ApiClient, autobind } from '@nara-way/prologue';
 import { Audience, Cineroom } from '../../../../aggregate/cineroom';
 import {
-  FindCurrentActorQuery,
-  FindCurrentAudienceQuery,
-  FindCurrentCineroomQuery, FindCurrentStageQuery,
+  FindActiveActorQuery,
+  FindActiveAudienceQuery,
+  FindActiveCineroomQuery, FindActiveStageQuery,
   FindDefaultCineroomQuery, FindDefaultStageQuery
 } from '../query';
 import { Actor, Stage } from "~/comp";
@@ -26,18 +26,18 @@ class ContextSeekApiStub {
     resDataName: 'queryResult',
   });
 
-  async findCurrentAudience(query: FindCurrentAudienceQuery): Promise<Audience | null> {
+  async findActiveAudience(query: FindActiveAudienceQuery): Promise<Audience | null> {
     return this.client.postNullable<Audience>(
       Audience,
-      '/find-current-audience/query',
+      '/find-active-audience/query',
       query,
     );
   }
 
-  async findCurrentCineroom(query: FindCurrentCineroomQuery): Promise<Cineroom | null> {
+  async findActiveCineroom(query: FindActiveCineroomQuery): Promise<Cineroom | null> {
     return this.client.postNullable<Cineroom>(
       Cineroom,
-      '/find-current-cineroom/query',
+      '/find-active-cineroom/query',
       query,
     );
   }
@@ -50,18 +50,18 @@ class ContextSeekApiStub {
     );
   }
 
-  async findCurrentActor(query: FindCurrentActorQuery): Promise<Actor | null> {
+  async findActiveActor(query: FindActiveActorQuery): Promise<Actor | null> {
     return this.client.postNullable<Actor>(
       Actor,
-      '/find-current-actor/query',
+      '/find-active-actor/query',
       query,
     );
   }
 
-  async findCurrentStage(query: FindCurrentStageQuery): Promise<Stage | null> {
+  async findActiveStage(query: FindActiveStageQuery): Promise<Stage | null> {
     return this.client.postNullable<Stage>(
       Stage,
-      '/find-current-stage/query',
+      '/find-active-stage/query',
       query,
     );
   }
