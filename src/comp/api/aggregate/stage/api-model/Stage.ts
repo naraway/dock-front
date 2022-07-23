@@ -1,16 +1,23 @@
-import { DomainEntity, NameValueList, NameValueType, StringList } from '@nara-way/accent';
+import { DomainEntity, NameValueList, NameValueType } from '@nara-way/accent';
 
 class Stage extends DomainEntity {
   name: string;
   cineroomId: string;
   backStageId: string;
-  kollectionVersionIds: StringList | null = null;
+  base: boolean;
+  stageId: string | undefined; // for cdo
 
-  constructor(name: string, cineroomId: string, backStageId: string) {
+  constructor(
+    name: string,
+    cineroomId: string,
+    backStageId: string,
+    base: boolean,
+  ) {
     super();
     this.name = name;
     this.cineroomId = cineroomId;
     this.backStageId = backStageId;
+    this.base = base;
   }
 
   static fromDomain(domain: Stage): Stage {
@@ -18,10 +25,10 @@ class Stage extends DomainEntity {
       domain.name,
       domain.cineroomId,
       domain.backStageId,
+      domain.base,
     );
 
     stage.setDomainEntity(domain);
-    stage.kollectionVersionIds = domain.kollectionVersionIds ? StringList.fromDomain(domain.kollectionVersionIds) : null;
     return stage;
   }
 
@@ -36,7 +43,7 @@ class Stage extends DomainEntity {
   }
 
   static new(): Stage {
-    return new Stage('', '', '');
+    return new Stage('', '', '', false);
   }
 
 }

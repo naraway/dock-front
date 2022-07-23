@@ -1,7 +1,7 @@
 import { QueryRequest } from '@nara-way/accent';
-import { AvailableDockRdo } from '../../api-model';
+import { ActiveDockRdo } from '../../api-model';
 
-class FindAvailableDockQuery extends QueryRequest<AvailableDockRdo> {
+class FindActiveDockQuery extends QueryRequest<ActiveDockRdo> {
   citizenUserId: string;
   email: string;
   pavilionId: string;
@@ -11,14 +11,14 @@ class FindAvailableDockQuery extends QueryRequest<AvailableDockRdo> {
     email: string,
     pavilionId: string,
   ) {
-    super(AvailableDockRdo);
+    super(ActiveDockRdo);
     this.citizenUserId = citizenUserId;
     this.email = email;
     this.pavilionId = pavilionId;
   }
 
-  static fromDomain(domain: FindAvailableDockQuery): FindAvailableDockQuery {
-    const query = new FindAvailableDockQuery(
+  static fromDomain(domain: FindActiveDockQuery): FindActiveDockQuery {
+    const query = new FindActiveDockQuery(
       domain.citizenUserId,
       domain.email,
       domain.pavilionId,
@@ -32,8 +32,8 @@ class FindAvailableDockQuery extends QueryRequest<AvailableDockRdo> {
     citizenUserId: string,
     email: string,
     pavilionId: string,
-  ): FindAvailableDockQuery {
-    const query = new FindAvailableDockQuery(
+  ): FindActiveDockQuery {
+    const query = new FindActiveDockQuery(
       citizenUserId,
       email,
       pavilionId
@@ -43,8 +43,8 @@ class FindAvailableDockQuery extends QueryRequest<AvailableDockRdo> {
 
   static byCitizenUserId(
     citizenUserId: string,
-  ): FindAvailableDockQuery {
-    const query = new FindAvailableDockQuery(
+  ): FindActiveDockQuery {
+    const query = new FindActiveDockQuery(
       citizenUserId,
       '',
       ''
@@ -55,8 +55,8 @@ class FindAvailableDockQuery extends QueryRequest<AvailableDockRdo> {
   static byEmailAndPavilionId(
     email: string,
     pavilionId: string,
-  ): FindAvailableDockQuery {
-    const query = new FindAvailableDockQuery(
+  ): FindActiveDockQuery {
+    const query = new FindActiveDockQuery(
       '',
       email,
       pavilionId,
@@ -65,4 +65,4 @@ class FindAvailableDockQuery extends QueryRequest<AvailableDockRdo> {
   }
 }
 
-export default FindAvailableDockQuery;
+export default FindActiveDockQuery;

@@ -1,10 +1,10 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import {
-  FindAvailableDockQuery,
-  AvailableDockRdo,
+  FindActiveDockQuery,
+  ActiveDockRdo,
   CineDock,
-  FindCurrentCineDockQuery,
-  FindCurrentStageDockQuery,
+  FindActiveCineDockQuery,
+  FindActiveStageDockQuery,
   DockSeekApiStub,
   StageDock,
 } from '../../../../api';
@@ -21,7 +21,7 @@ class DockFlowStateKeeper {
 
   private readonly dockFlowQueryApiStub: DockSeekApiStub;
 
-  availableDock: AvailableDockRdo | null = null;
+  availableDock: ActiveDockRdo | null = null;
   currentCineDock: CineDock | null = null;
   currentStageDock: StageDock | null = null;
 
@@ -33,7 +33,7 @@ class DockFlowStateKeeper {
   }
 
   init() {
-    this.availableDock = AvailableDockRdo.new();
+    this.availableDock = ActiveDockRdo.new();
     this.currentCineDock = CineDock.new();
     this.currentStageDock = StageDock.new();
   }
@@ -46,9 +46,9 @@ class DockFlowStateKeeper {
 
   async findAvailableDockWithCitizenId(
     citizenUserId: string,
-  ): Promise<AvailableDockRdo | null> {
-    const query = FindAvailableDockQuery.byCitizenUserId(citizenUserId);
-    const availableDock = await this.dockFlowQueryApiStub.findAvailableDock(query);
+  ): Promise<ActiveDockRdo | null> {
+    const query = FindActiveDockQuery.byCitizenUserId(citizenUserId);
+    const availableDock = await this.dockFlowQueryApiStub.findActiveDock(query);
 
     runInAction(() => {
       this.availableDock = availableDock;
@@ -59,9 +59,9 @@ class DockFlowStateKeeper {
   async findAvailableDockWithEmailAndPavilionId(
     email: string,
     pavilionId: string,
-  ): Promise<AvailableDockRdo | null> {
-    const query = FindAvailableDockQuery.byEmailAndPavilionId(email, pavilionId);
-    const availableDock = await this.dockFlowQueryApiStub.findAvailableDock(query);
+  ): Promise<ActiveDockRdo | null> {
+    const query = FindActiveDockQuery.byEmailAndPavilionId(email, pavilionId);
+    const availableDock = await this.dockFlowQueryApiStub.findActiveDock(query);
 
     runInAction(() => {
       this.availableDock = availableDock;
@@ -70,8 +70,8 @@ class DockFlowStateKeeper {
   }
 
   async findCurrentCineDock(citizenId: string): Promise<CineDock | null> {
-    const query = FindCurrentCineDockQuery.by(citizenId);
-    const currentCineDock = await this.dockFlowQueryApiStub.findCurrentCineDock(query);
+    const query = FindActiveCineDockQuery.by(citizenId);
+    const currentCineDock = await this.dockFlowQueryApiStub.findActiveCineDock(query);
 
     runInAction(() => {
       this.currentCineDock = currentCineDock;
@@ -80,8 +80,8 @@ class DockFlowStateKeeper {
   }
 
   async findCurrentStageDock(audienceId: string): Promise<StageDock | null> {
-    const query = FindCurrentStageDockQuery.by(audienceId);
-    const currentStageDock = await this.dockFlowQueryApiStub.findCurrentStageDock(query);
+    const query = FindActiveStageDockQuery.by(audienceId);
+    const currentStageDock = await this.dockFlowQueryApiStub.findActiveStageDock(query);
 
     runInAction(() => {
       this.currentStageDock = currentStageDock;

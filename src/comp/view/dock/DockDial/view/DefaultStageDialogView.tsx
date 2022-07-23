@@ -42,7 +42,7 @@ const DefaultStageDialogView =
 
     const handleClickOk = async () => {
       await dock.toggleDefaultFirst(defaultFirst);
-      await dock.updateDefaultStage(dock.currentStage?.id || '');
+      await dock.updateDefaultStage(dock.activeStage?.id || '');
       dock.reload();
 
       if (onClickOk) {
@@ -70,7 +70,7 @@ const DefaultStageDialogView =
                 fullWidth
                 contentEditable={false}
                 label={'Cineroom'}
-                value={dock.currentCineroom?.name}
+                value={dock.activeCineroom?.name}
                 inputProps={{ readOnly: true }}
               />
             </Grid>
@@ -79,7 +79,7 @@ const DefaultStageDialogView =
                 fullWidth
                 contentEditable={false}
                 label={'Stage'}
-                value={dock.currentStage?.name}
+                value={dock.activeStage?.name}
                 inputProps={{ readOnly: true }}
               />
             </Grid>

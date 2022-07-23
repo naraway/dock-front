@@ -1,20 +1,21 @@
-import { Actor, CineroomChart, Stage, StageRole } from "../../../../aggregate";
+import { Actor, CineroomChart, Stage } from '../../../../aggregate';
+import { KollectionRole } from '@nara-way/accent';
 
 class CineroomChartRoleAssignRdo {
   cineroomChart: CineroomChart;
   stages: Stage[];
-  stageRoles: StageRole[];
+  kollectionRoles: KollectionRole[];
   actors: Actor[];
 
   constructor(
     cineroomChart: CineroomChart,
     stages: Stage[],
-    stageRoles: StageRole[],
+    kollectionRoles: KollectionRole[],
     actors: Actor[],
   ) {
     this.cineroomChart = cineroomChart;
     this.stages = stages;
-    this.stageRoles = stageRoles;
+    this.kollectionRoles = kollectionRoles;
     this.actors = actors;
   }
 
@@ -22,7 +23,7 @@ class CineroomChartRoleAssignRdo {
     const cineroomChartTreeRdo = new CineroomChartRoleAssignRdo(
       domain.cineroomChart,
       domain.stages,
-      domain.stageRoles,
+      domain.kollectionRoles,
       domain.actors,
     );
 

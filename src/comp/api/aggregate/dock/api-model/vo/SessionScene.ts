@@ -1,14 +1,17 @@
+import cineroomRoleBook from '../../../cineroom/api-model/CineroomRoleBook';
+import { IdNameList } from '@nara-way/accent';
+
 class SessionScene {
   url: string;
   name: string;
   actorId: string;
-  stageRoleIds: string[] = [];
+  cineroomRoleBooks: IdNameList;
 
-  constructor(url: string, name: string, actorId: string, stageRoleIds: string[]) {
+  constructor(url: string, name: string, actorId: string, cineroomRoleBooks: IdNameList) {
     this.url = url;
     this.name = name;
     this.actorId = actorId;
-    this.stageRoleIds = stageRoleIds;
+    this.cineroomRoleBooks = cineroomRoleBooks;
   }
 
   static fromDomain(domain: SessionScene): SessionScene {
@@ -16,7 +19,7 @@ class SessionScene {
       domain.url,
       domain.name,
       domain.actorId,
-      domain.stageRoleIds,
+      domain.cineroomRoleBooks,
     );
 
     return sessionKollectie;

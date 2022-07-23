@@ -1,3 +1,3 @@
-export { default as FindAvailableDockQuery } from './FindAvailableDockQuery';
-export { default as FindCurrentCineDockQuery } from './FindCurrentCineDockQuery';
-export { default as FindCurrentStageDockQuery } from './FindCurrentStageDockQuery';
+export { default as FindActiveDockQuery } from './FindActiveDockQuery';
+export { default as FindActiveCineDockQuery } from './FindActiveCineDockQuery';
+export { default as FindActiveStageDockQuery } from './FindActiveStageDockQuery';

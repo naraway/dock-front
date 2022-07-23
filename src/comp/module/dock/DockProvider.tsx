@@ -1,24 +1,45 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { AvailableDockRdo } from '../../api';
+import { ActiveDockRdo } from '../../api';
 import { useAuth } from '../auth';
-import { Current, CurrentKollection, CurrentStage } from './model';
+import { ActiveInfo, ActiveKollection, ActiveStage } from './model';
 import { DockStorage } from './storage';
-import { ActorKey } from "@nara-way/accent";
 
 export interface Dock {
-  availableDock: AvailableDockRdo | null;
-  defaultStage: Current | null,
+  activeDock: ActiveDockRdo | null;
+  defaultStage: ActiveInfo | null,
   defaultFirst: boolean,
-  currentCitizen: Current | null,
-  currentPavilion: Current | null,
-  currentAudience: Current | null,
-  currentCineroom: Current | null,
-  currentActor: Current | null,
-  currentStage: CurrentStage | null,
-  currentKollection: CurrentKollection | null,
-  currentStageRoles: string[];
+  // for legacy start
+  currentCitizen: ActiveInfo | null,
+  currentPavilion: ActiveInfo | null,
+  currentAudience: ActiveInfo | null,
+  currentCineroom: ActiveInfo | null,
+  currentActor: ActiveInfo | null,
+  currentStage: ActiveStage | null,
+  currentKollection: ActiveKollection | null,
+  currentKollectionRoles: string[];
   currentDramaRoles: string[];
   currentDramaRoleMap: {
+    [key: string]: string[],
+  },
+  // for legacy end
+  activeCitizen: ActiveInfo | null,
+  activePavilion: ActiveInfo | null,
+  activeAudience: ActiveInfo | null,
+  activeCineroom: ActiveInfo | null,
+  activeActor: ActiveInfo | null,
+  activeStage: ActiveStage | null,
+  activeKollection: ActiveKollection | null,
+  activeKollectionRoles: string[];
+  activeDramaRoles: string[];
+  activeDramaRoleMap: {
+    [key: string]: string[],
+  },
+  baseActor: ActiveInfo | null,
+  baseStage: ActiveStage | null,
+  baseKollection: ActiveKollection | null,
+  baseKollectionRoles: string[];
+  baseDramaRoles: string[];
+  baseDramaRoleMap: {
     [key: string]: string[],
   },
   loaded: boolean,
@@ -30,9 +51,10 @@ export interface Dock {
 }
 
 export const DockContext = React.createContext<Dock>({
-  availableDock: null,
+  activeDock: null,
   defaultStage: null,
   defaultFirst: false,
+  // for legacy start
   currentCitizen: null,
   currentPavilion: null,
   currentAudience: null,
@@ -40,9 +62,26 @@ export const DockContext = React.createContext<Dock>({
   currentActor: null,
   currentStage: null,
   currentKollection: null,
-  currentStageRoles: [],
+  currentKollectionRoles: [],
   currentDramaRoles: [],
   currentDramaRoleMap: {},
+  // for legacy end
+  activeCitizen: null,
+  activePavilion: null,
+  activeAudience: null,
+  activeCineroom: null,
+  activeActor: null,
+  activeStage: null,
+  activeKollection: null,
+  activeKollectionRoles: [],
+  activeDramaRoles: [],
+  activeDramaRoleMap: {},
+  baseActor: null,
+  baseStage: null,
+  baseKollection: null,
+  baseKollectionRoles: [],
+  baseDramaRoles: [],
+  baseDramaRoleMap: {},
   loaded: false,
   updateDefaultStage: (stageId: string) => {},
   toggleDefaultFirst: (defaultFirst: boolean) => {},
@@ -61,9 +100,10 @@ const DockProvider = (props: {
   const { development = false, devdock, children } = props;
 
   const [ dock, setDock ] = useState<Dock>({
-    availableDock: null,
+    activeDock: null,
     defaultStage: null,
     defaultFirst: false,
+    // for legacy start
     currentCitizen: null,
     currentPavilion: null,
     currentAudience: null,
@@ -71,9 +111,26 @@ const DockProvider = (props: {
     currentActor: null,
     currentStage: null,
     currentKollection: null,
-    currentStageRoles: [],
+    currentKollectionRoles: [],
     currentDramaRoles: [],
     currentDramaRoleMap: {},
+    // for legacy end
+    activeCitizen: null,
+    activePavilion: null,
+    activeAudience: null,
+    activeCineroom: null,
+    activeActor: null,
+    activeStage: null,
+    activeKollection: null,
+    activeKollectionRoles: [],
+    activeDramaRoles: [],
+    activeDramaRoleMap: {},
+    baseActor: null,
+    baseStage: null,
+    baseKollection: null,
+    baseKollectionRoles: [],
+    baseDramaRoles: [],
+    baseDramaRoleMap: {},
     loaded: false,
     updateDefaultStage: (stageId: string) => {
       if (ref.current && ref.current.updateDefaultStage) {
@@ -98,46 +155,79 @@ const DockProvider = (props: {
     reload: async () => {
       if (ref.current) {
         const {
-          availableDock,
+          activeDock,
           defaultStage,
           defaultFirst,
-          currentPavilion,
-          currentCitizen,
-          currentCineroom,
-          currentAudience,
-          currentStage,
-          currentActor,
-          currentKollection,
-          currentStageRoles,
-          currentDramaRoles,
+          activePavilion,
+          activeCitizen,
+          activeCineroom,
+          activeAudience,
+          activeActor,
+          activeStage,
+          activeKollection,
+          activeKollectionRoles,
+          activeDramaRoles,
+          baseActor,
+          baseStage,
+          baseKollection,
+          baseKollectionRoles,
+          baseDramaRoles,
           loaded,
         } = ref.current;
 
-        const currentDramaRoleMap: {[key: string]: string[]} = {};
-        currentDramaRoles.forEach(currentDramaRole => {
-          const [key, value] = currentDramaRole.split(':');
-          if (currentDramaRoleMap[key]) {
-            currentDramaRoleMap[key].push(value);
+        const activeDramaRoleMap: {[key: string]: string[]} = {};
+        activeDramaRoles.forEach(activeDramaRole => {
+          const [key, value] = activeDramaRole.split(':');
+          if (activeDramaRoleMap[key]) {
+            activeDramaRoleMap[key].push(value);
           } else {
-            currentDramaRoleMap[key] = [value];
+            activeDramaRoleMap[key] = [value];
+          }
+        });
+
+        const baseDramaRoleMap: {[key: string]: string[]} = {};
+        baseDramaRoles.forEach(baseDramaRole => {
+          const [key, value] = baseDramaRole.split(':');
+          if (baseDramaRoleMap[key]) {
+            baseDramaRoleMap[key].push(value);
+          } else {
+            baseDramaRoleMap[key] = [value];
           }
         });
 
         setDock({
           ...dock,
-          availableDock,
+          activeDock,
           defaultStage,
           defaultFirst,
-          currentPavilion,
-          currentCitizen,
-          currentCineroom,
-          currentAudience,
-          currentStage,
-          currentActor,
-          currentKollection,
-          currentStageRoles,
-          currentDramaRoles,
-          currentDramaRoleMap,
+          // for legacy start
+          currentPavilion: activePavilion,
+          currentCitizen: activeCitizen,
+          currentCineroom: activeCineroom,
+          currentAudience: activeAudience,
+          currentActor: activeActor,
+          currentStage: activeStage,
+          currentKollection: activeKollection,
+          currentKollectionRoles: activeKollectionRoles,
+          currentDramaRoles: activeDramaRoles,
+          currentDramaRoleMap: activeDramaRoleMap,
+          // for legacy end
+          activePavilion,
+          activeCitizen,
+          activeCineroom,
+          activeAudience,
+          activeActor,
+          activeStage,
+          activeKollection,
+          activeKollectionRoles,
+          activeDramaRoles,
+          activeDramaRoleMap,
+          baseActor,
+          baseStage,
+          baseKollection,
+          baseKollectionRoles,
+          baseDramaRoles,
+          baseDramaRoleMap,
           loaded,
         });
       }
@@ -173,45 +263,61 @@ const DockProvider = (props: {
 
     // dev only
     if (development && devdock) {
-      if (!dock || !dock.currentActor) {
-        const {
-          currentDramaRoles,
-        } = devdock;
+      if (!dock || !dock.activeActor) {
+        const { activeDramaRoles, baseDramaRoles } = devdock;
 
-        const currentDramaRoleMap: {[key: string]: string[]} = {};
-        currentDramaRoles.forEach(currentDramaRole => {
-          const [key, value] = currentDramaRole.split(':');
-          if (currentDramaRoleMap[key]) {
-            if (!currentDramaRoleMap[key].includes(value)) {
-              currentDramaRoleMap[key].push(value);
+        const activeDramaRoleMap: {[key: string]: string[]} = {};
+        activeDramaRoles.forEach(activeDramaRole => {
+          const [key, value] = activeDramaRole.split(':');
+          if (activeDramaRoleMap[key]) {
+            if (!activeDramaRoleMap[key].includes(value)) {
+              activeDramaRoleMap[key].push(value);
             }
           } else {
-            currentDramaRoleMap[key] = [value];
+            activeDramaRoleMap[key] = [value];
+          }
+        });
+
+        const baseDramaRoleMap: {[key: string]: string[]} = {};
+        baseDramaRoles.forEach(baseDramaRole => {
+          const [key, value] = baseDramaRole.split(':');
+          if (baseDramaRoleMap[key]) {
+            if (!baseDramaRoleMap[key].includes(value)) {
+              baseDramaRoleMap[key].push(value);
+            }
+          } else {
+            baseDramaRoleMap[key] = [value];
           }
         });
 
         setDock({
           ...dock,
           ...devdock,
-          currentDramaRoleMap,
+          activeDramaRoleMap,
+          baseDramaRoleMap,
           loaded: true,
         });
 
         if (!ref.current?.loaded) {
           const dockStorage = ref.current;
           dockStorage?.setDock(
-            devdock.availableDock || new AvailableDockRdo(null, null, null, false, []),
-            devdock.defaultStage || Current.new(),
+            devdock.activeDock || new ActiveDockRdo(null, null, null, false, []),
+            devdock.defaultStage || ActiveInfo.new(),
             devdock.defaultFirst || false,
-            devdock.currentCitizen || Current.new(),
-            devdock.currentPavilion || Current.new(),
-            devdock.currentAudience || Current.new(),
-            devdock.currentCineroom || Current.new(),
-            devdock.currentActor || Current.new(),
-            devdock.currentStage || CurrentStage.new(),
-            devdock.currentKollection || CurrentKollection.new(),
-            devdock.currentStageRoles || [],
-            devdock.currentDramaRoles || [],
+            devdock.activeCitizen || ActiveInfo.new(),
+            devdock.activePavilion || ActiveInfo.new(),
+            devdock.activeAudience || ActiveInfo.new(),
+            devdock.activeCineroom || ActiveInfo.new(),
+            devdock.activeActor || ActiveInfo.new(),
+            devdock.activeStage || ActiveStage.new(),
+            devdock.activeKollection || ActiveKollection.new(),
+            devdock.activeKollectionRoles || [],
+            devdock.activeDramaRoles || [],
+            devdock.baseActor || ActiveInfo.new(),
+            devdock.baseStage || ActiveStage.new(),
+            devdock.baseKollection || ActiveKollection.new(),
+            devdock.baseKollectionRoles || [],
+            devdock.baseDramaRoles || [],
             development,
           );
         }
@@ -221,48 +327,83 @@ const DockProvider = (props: {
 
   if (!development && ref.current && dock.loaded !== ref.current?.loaded) {
     const {
-      availableDock,
+      activeDock,
       defaultStage,
       defaultFirst,
-      currentPavilion,
-      currentCitizen,
-      currentCineroom,
-      currentAudience,
-      currentStage,
-      currentActor,
-      currentKollection,
-      currentStageRoles,
-      currentDramaRoles,
+      activePavilion,
+      activeCitizen,
+      activeCineroom,
+      activeAudience,
+      activeActor,
+      activeStage,
+      activeKollection,
+      activeKollectionRoles,
+      activeDramaRoles,
+      baseActor,
+      baseStage,
+      baseKollection,
+      baseKollectionRoles,
+      baseDramaRoles,
       loaded,
     } = ref.current;
 
-    const currentDramaRoleMap: {[key: string]: string[]} = {};
-    currentDramaRoles.forEach(currentDramaRole => {
-      const [key, value] = currentDramaRole.split(':');
-      if (currentDramaRoleMap[key]) {
-        if (!currentDramaRoleMap[key].includes(value)) {
-          currentDramaRoleMap[key].push(value);
+    const activeDramaRoleMap: {[key: string]: string[]} = {};
+    activeDramaRoles.forEach(activeDramaRole => {
+      const [key, value] = activeDramaRole.split(':');
+      if (activeDramaRoleMap[key]) {
+        if (!activeDramaRoleMap[key].includes(value)) {
+          activeDramaRoleMap[key].push(value);
         }
       } else {
-        currentDramaRoleMap[key] = [value];
+        activeDramaRoleMap[key] = [value];
+      }
+    });
+
+    const baseDramaRoleMap: {[key: string]: string[]} = {};
+    baseDramaRoles.forEach(baseDramaRole => {
+      const [key, value] = baseDramaRole.split(':');
+      if (baseDramaRoleMap[key]) {
+        if (!baseDramaRoleMap[key].includes(value)) {
+          baseDramaRoleMap[key].push(value);
+        }
+      } else {
+        baseDramaRoleMap[key] = [value];
       }
     });
 
     setDock({
       ...dock,
-      availableDock,
+      activeDock,
       defaultStage,
       defaultFirst,
-      currentPavilion,
-      currentCitizen,
-      currentCineroom,
-      currentAudience,
-      currentStage,
-      currentActor,
-      currentKollection,
-      currentStageRoles,
-      currentDramaRoles,
-      currentDramaRoleMap,
+      // for legacy start
+      currentPavilion: activePavilion,
+      currentCitizen: activeCitizen,
+      currentCineroom: activeCineroom,
+      currentAudience: activeAudience,
+      currentActor: activeActor,
+      currentStage: activeStage,
+      currentKollection: activeKollection,
+      currentKollectionRoles: activeKollectionRoles,
+      currentDramaRoles: activeDramaRoles,
+      currentDramaRoleMap: activeDramaRoleMap,
+      // for legacy end
+      activePavilion,
+      activeCitizen,
+      activeCineroom,
+      activeAudience,
+      activeActor,
+      activeStage,
+      activeKollection,
+      activeKollectionRoles,
+      activeDramaRoles,
+      activeDramaRoleMap,
+      baseActor,
+      baseStage,
+      baseKollection,
+      baseKollectionRoles,
+      baseDramaRoles,
+      baseDramaRoleMap,
       loaded,
     });
   }

@@ -1,8 +1,8 @@
 import { NaraException, StageKey } from '@nara-way/accent';
 import { autobind, WebStorage } from '@nara-way/prologue';
-import { AvailableCineroom, AvailableDockRdo, AvailableKollection, AvailableStage } from '~/comp/api';
+import { DockCineroom, ActiveDockRdo, DockKollection, DockStage } from '~/comp/api';
 import { CineroomContextFlowStateKeeper, DockFlowStateKeeper, StageContextFlowStateKeeper } from '~/comp/state';
-import { Current, CurrentKollection, CurrentStage } from '../model';
+import { ActiveInfo, ActiveKollection, ActiveStage } from '../model';
 
 class DockStorage {
   private static _instance: DockStorage;
@@ -18,17 +18,22 @@ class DockStorage {
   private readonly cineroomContextFlowStateKeeper: CineroomContextFlowStateKeeper;
   private readonly stageContextFlowStateKeeper: StageContextFlowStateKeeper;
 
-  private _availableDock = WebStorage.newSession<AvailableDockRdo>('availableDock', AvailableDockRdo.fromDomain);
-  private _currentCitizen = WebStorage.newSession<Current>('currentCitizen', Current.fromDomain);
-  private _currentPavilion = WebStorage.newSession<Current>('currentPavilion', Current.fromDomain);
-  private _currentAudience = WebStorage.newSession<Current>('currentAudience', Current.fromDomain);
-  private _currentCineroom = WebStorage.newSession<Current>('currentCineroom', Current.fromDomain);
-  private _currentActor = WebStorage.newSession<Current>('currentActor', Current.fromDomain);
-  private _currentStage = WebStorage.newSession<CurrentStage>('currentStage', CurrentStage.fromDomain);
-  private _currentKollection = WebStorage.newSession<CurrentKollection>('currentKollection', CurrentKollection.fromDomain);
-  private _currentStageRoles = WebStorage.newSession<string[]>('currentStageRoles', Array);
-  private _currentDramaRoles = WebStorage.newSession<string[]>('currentDramaRoles', Array);
-  private _defaultStage = WebStorage.newSession<Current>('defaultStage', Current.fromDomain);
+  private _activeDock = WebStorage.newSession<ActiveDockRdo>('activeDock', ActiveDockRdo.fromDomain);
+  private _activeCitizen = WebStorage.newSession<ActiveInfo>('activeCitizen', ActiveInfo.fromDomain);
+  private _activePavilion = WebStorage.newSession<ActiveInfo>('activePavilion', ActiveInfo.fromDomain);
+  private _activeAudience = WebStorage.newSession<ActiveInfo>('activeAudience', ActiveInfo.fromDomain);
+  private _activeCineroom = WebStorage.newSession<ActiveInfo>('activeCineroom', ActiveInfo.fromDomain);
+  private _activeActor = WebStorage.newSession<ActiveInfo>('activeActor', ActiveInfo.fromDomain);
+  private _activeStage = WebStorage.newSession<ActiveStage>('activeStage', ActiveStage.fromDomain);
+  private _activeKollection = WebStorage.newSession<ActiveKollection>('activeKollection', ActiveKollection.fromDomain);
+  private _activeKollectionRoles = WebStorage.newSession<string[]>('activeKollectionRoles', Array);
+  private _activeDramaRoles = WebStorage.newSession<string[]>('activeDramaRoles', Array);
+  private _baseActor = WebStorage.newSession<ActiveInfo>('baseActor', ActiveInfo.fromDomain);
+  private _baseStage = WebStorage.newSession<ActiveStage>('baseStage', ActiveStage.fromDomain);
+  private _baseKollection = WebStorage.newSession<ActiveKollection>('baseKollection', ActiveKollection.fromDomain);
+  private _baseKollectionRoles = WebStorage.newSession<string[]>('baseKollectionRoles', Array);
+  private _baseDramaRoles = WebStorage.newSession<string[]>('baseDramaRoles', Array);
+  private _defaultStage = WebStorage.newSession<ActiveInfo>('defaultStage', ActiveInfo.fromDomain);
   private _defaultFirst = WebStorage.newSession<boolean>('defaultFirst');
   private _loaded = WebStorage.newSession<boolean>('isLoaded');
   private _development: boolean = false;
@@ -45,150 +50,177 @@ class DockStorage {
   }
 
   async clear(): Promise<void> {
-    this._availableDock.remove();
+    this._activeDock.remove();
     this._defaultStage.remove();
     this._defaultFirst.remove();
-    this._currentCitizen.remove();
-    this._currentPavilion.remove();
-    this._currentAudience.remove();
-    this._currentCineroom.remove();
-    this._currentActor.remove();
-    this._currentStage.remove();
-    this._currentKollection.remove();
-    this._currentStageRoles.remove();
-    this._currentDramaRoles.remove();
+    this._activeCitizen.remove();
+    this._activePavilion.remove();
+    this._activeAudience.remove();
+    this._activeCineroom.remove();
+    this._activeActor.remove();
+    this._activeStage.remove();
+    this._activeKollection.remove();
+    this._activeKollectionRoles.remove();
+    this._activeDramaRoles.remove();
+    this._baseActor.remove();
+    this._baseStage.remove();
+    this._baseKollection.remove();
+    this._baseKollectionRoles.remove();
+    this._baseDramaRoles.remove();
     this._loaded.remove();
   }
 
   setDock(
-    availableDock: AvailableDockRdo,
-    defaultStage: Current,
+    activeDock: ActiveDockRdo,
+    defaultStage: ActiveInfo,
     defaultFirst: boolean,
-    currentCitizen: Current,
-    currentPavilion: Current,
-    currentAudience: Current,
-    currentCineroom: Current,
-    currentActor: Current,
-    currentStage: CurrentStage,
-    currentKollection: CurrentKollection,
-    currentStageRoles: string[],
-    currentDramaRoles: string[],
+    activeCitizen: ActiveInfo,
+    activePavilion: ActiveInfo,
+    activeAudience: ActiveInfo,
+    activeCineroom: ActiveInfo,
+    activeActor: ActiveInfo,
+    activeStage: ActiveStage,
+    activeKollection: ActiveKollection,
+    activeKollectionRoles: string[],
+    activeDramaRoles: string[],
+    baseActor: ActiveInfo,
+    baseStage: ActiveStage,
+    baseKollection: ActiveKollection,
+    baseKollectionRoles: string[],
+    baseDramaRoles: string[],
     development: boolean = false,
   ) {
-    this.setAvailableDock(availableDock);
+    this.setActiveDock(activeDock);
     this.setDefaultStage(defaultStage);
     this.setDefaultFirst(defaultFirst);
-    this.setCurrentPavilion(currentPavilion);
-    this.setCurrentCitizen(currentCitizen);
-    this.setCurrentCineroom(currentCineroom);
-    this.setCurrentAudience(currentAudience);
-    this.setCurrentStage(currentStage);
-    this.setCurrentActor(currentActor);
-    this.setCurrentKollection(currentKollection);
-    this.setCurrentStageRoles(currentStageRoles);
-    this.setCurrentDramaRoles(currentDramaRoles);
+    this.setActivePavilion(activePavilion);
+    this.setActiveCitizen(activeCitizen);
+    this.setActiveCineroom(activeCineroom);
+    this.setActiveAudience(activeAudience);
+    this.setActiveActor(activeActor);
+    this.setActiveStage(activeStage);
+    this.setActiveKollection(activeKollection);
+    this.setActiveKollectionRoles(activeKollectionRoles);
+    this.setActiveDramaRoles(activeDramaRoles);
+    this.setBaseActor(baseActor);
+    this.setBaseStage(baseStage);
+    this.setBaseKollection(baseKollection);
+    this.setBaseKollectionRoles(baseKollectionRoles);
+    this.setBaseDramaRoles(baseDramaRoles);
     this.setDevelopment(development);
     this.setLoaded(true);
   }
 
-  async findAvailableDockWithCitizenId(citizenId: string): Promise<AvailableDockRdo> {
-    const availableDock = await this.dockFlowStateKeeper.findAvailableDockWithCitizenId(citizenId);
-    return await this.findAvailableDock(availableDock);
+  async findAvailableDockWithCitizenId(citizenId: string): Promise<ActiveDockRdo> {
+    const activeDock = await this.dockFlowStateKeeper.findAvailableDockWithCitizenId(citizenId);
+    return await this.findAvailableDock(activeDock);
   }
 
-  async findAvailableDockWithEmailAndPavilionId(email: string, pavilionId: string): Promise<AvailableDockRdo> {
-    const availableDock = await this.dockFlowStateKeeper.findAvailableDockWithEmailAndPavilionId(email, pavilionId);
-    return await this.findAvailableDock(availableDock);
+  async findAvailableDockWithEmailAndPavilionId(email: string, pavilionId: string): Promise<ActiveDockRdo> {
+    const activeDock = await this.dockFlowStateKeeper.findAvailableDockWithEmailAndPavilionId(email, pavilionId);
+    return await this.findAvailableDock(activeDock);
   }
 
-  async findAvailableDock(availableDock: AvailableDockRdo | null): Promise<AvailableDockRdo> {
-    if (!availableDock) {
-      throw new NaraException('DockStorage.findAvailableDock', 'cannot find available dock');
+  async findAvailableDock(activeDock: ActiveDockRdo | null): Promise<ActiveDockRdo> {
+    if (!activeDock) {
+      throw new NaraException('DockStorage.findAvailableDock', 'cannot find active dock');
     }
 
     this.setLoaded(true);
 
-    this.setAvailableDock(availableDock);
+    this.setActiveDock(activeDock);
 
-    if (availableDock.defaultStage) {
-      this.setDefaultStage(availableDock.defaultStage);
+    if (activeDock.defaultStage) {
+      this.setDefaultStage(activeDock.defaultStage);
     }
 
-    this.setDefaultFirst(availableDock.defaultFirstForStage || false);
+    this.setDefaultFirst(activeDock.defaultFirstForStage || false);
 
-    if (availableDock.citizen) {
-      this.setCurrentCitizen(availableDock.citizen);
+    if (activeDock.citizen) {
+      this.setActiveCitizen(activeDock.citizen);
     }
-    if (availableDock.pavilion) {
-      this.setCurrentPavilion(availableDock.pavilion);
+    if (activeDock.pavilion) {
+      this.setActivePavilion(activeDock.pavilion);
     }
 
-    if (availableDock.cinerooms && availableDock.cinerooms.some(cineroom => cineroom.current)) {
-      const availableCineroom = availableDock.cinerooms.find(cineroom => cineroom.current);
-      if (availableCineroom) {
-        this.setCurrentAudienceAndCineroom(availableCineroom);
+    if (activeDock.cinerooms && activeDock.cinerooms.some(cineroom => cineroom.active)) {
+      const dockCineroom = activeDock.cinerooms.find(cineroom => cineroom.active);
+      if (dockCineroom) {
+        this.setActiveAudienceAndCineroom(dockCineroom);
       }
-    } else if (availableDock.cinerooms && availableDock.cinerooms.length > 0) {
-      const availableCineroom = availableDock.cinerooms[0];
-      this.setCurrentAudienceAndCineroom(availableCineroom);
+    } else if (activeDock.cinerooms && activeDock.cinerooms.length > 0) {
+      const dockCineroom = activeDock.cinerooms[0];
+      this.setActiveAudienceAndCineroom(dockCineroom);
     }
 
-    return availableDock;
+    return activeDock;
   }
 
-  private setCurrentAudienceAndCineroom(availableCineroom: AvailableCineroom) {
-    if (availableCineroom.audience) {
-      this.setCurrentAudience(availableCineroom.audience);
+  private setActiveAudienceAndCineroom(dockCineroom: DockCineroom) {
+    if (dockCineroom.audience) {
+      this.setActiveAudience(dockCineroom.audience);
     }
-    if (availableCineroom.cineroom) {
-      this.setCurrentCineroom(availableCineroom.cineroom);
+    if (dockCineroom.cineroom) {
+      this.setActiveCineroom(dockCineroom.cineroom);
     }
 
-    if (availableCineroom.stages && availableCineroom.stages.some(stage => stage.current)) {
-      const availableStage = availableCineroom.stages.find(stage => stage.current);
-      if (availableStage) {
-        this.setCurrentActorAndStage(availableStage);
+    // set active
+    if (dockCineroom.stages && dockCineroom.stages.some(stage => stage.active)) {
+      const dockStage = dockCineroom.stages.find(stage => stage.active);
+      if (dockStage) {
+        this.setActiveActorAndStage(dockStage);
       }
-    } else if (availableCineroom.stages && availableCineroom.stages.length > 0) {
-      const availableStage = availableCineroom.stages[0];
-      this.setCurrentActorAndStage(availableStage);
-    }
-  }
-
-  private setCurrentActorAndStage(availableStage: AvailableStage) {
-    if (availableStage.actor) {
-      this.setCurrentActor(availableStage.actor);
-    }
-    if (availableStage.stage) {
-      const { id, name } = availableStage.stage;
-      this.setCurrentStage(new CurrentStage(id, name, availableStage.kollections));
+    } else if (dockCineroom.stages && dockCineroom.stages.length > 0) {
+      const dockStage = dockCineroom.stages[0];
+      this.setActiveActorAndStage(dockStage);
     }
 
-    if (availableStage.kollections && availableStage.kollections.some(kollection => kollection.current)) {
-      const availableKollection = availableStage.kollections.find(kollection => kollection.current);
-      if (availableKollection) {
-        availableKollection.kollection.path = availableKollection.path;
-        this.setCurrentKollectionsAndRoles(availableKollection);
+    // set base
+    if (dockCineroom.stages && dockCineroom.stages.some(stage => stage.base)) {
+      const dockStage = dockCineroom.stages.find(stage => stage.base);
+      if (dockStage) {
+        this.setBaseActorAndStage(dockStage);
       }
-    } else if (availableStage.kollections && availableStage.kollections.length > 0) {
-      const availableKollection = availableStage.kollections[0];
-      availableKollection.kollection.path = availableKollection.path;
-      this.setCurrentKollectionsAndRoles(availableKollection);
+    } else if (dockCineroom.stages && dockCineroom.stages.length > 0) {
+      const dockStage = dockCineroom.stages[0];
+      this.setBaseActorAndStage(dockStage);
     }
   }
 
-  private setCurrentKollectionsAndRoles(availableKollection: AvailableKollection) {
-    if (availableKollection.kollection && availableKollection.path) {
-      const currentKollection = new CurrentKollection(availableKollection.kollection.id, availableKollection.kollection.name, availableKollection.path);
-      this.setCurrentKollection(currentKollection);
+  private setActiveActorAndStage(dockStage: DockStage) {
+    if (dockStage.actor) {
+      this.setActiveActor(dockStage.actor);
+    }
+    if (dockStage.stage) {
+      const { id, name } = dockStage.stage;
+      this.setActiveStage(new ActiveStage(id, name, dockStage.kollections));
     }
 
-    const stageRoles: string[] = [];
+    if (dockStage.kollections && dockStage.kollections.some(kollection => kollection.active)) {
+      const dockKollection = dockStage.kollections.find(kollection => kollection.active);
+      if (dockKollection) {
+        dockKollection.kollection.path = dockKollection.path;
+        this.setActiveKollectionsAndRoles(dockKollection);
+      }
+    } else if (dockStage.kollections && dockStage.kollections.length > 0) {
+      const dockKollection = dockStage.kollections[0];
+      dockKollection.kollection.path = dockKollection.path;
+      this.setActiveKollectionsAndRoles(dockKollection);
+    }
+  }
+
+  private setActiveKollectionsAndRoles(dockKollection: DockKollection) {
+    if (dockKollection.kollection && dockKollection.path) {
+      const activeKollection = new ActiveKollection(dockKollection.kollection.id, dockKollection.kollection.name, dockKollection.path);
+      this.setActiveKollection(activeKollection);
+    }
+
+    const kollectionRoles: string[] = [];
     const dramaRoles: string[] = [];
-    if (availableKollection.stageRoles) {
-      availableKollection.stageRoles.forEach(stageRole => {
-        stageRoles.push(stageRole.code);
-        stageRole.dramaRoles.forEach(role => {
+    if (dockKollection.kollectionRoles) {
+      dockKollection.kollectionRoles.forEach(kollectionRole => {
+        kollectionRoles.push(kollectionRole.code);
+        kollectionRole.dramaRoles.forEach(role => {
           const roleCode = `${role.dramaId}:${role.code}`;
           if (!dramaRoles.includes(roleCode)) {
             dramaRoles.push(roleCode);
@@ -196,14 +228,59 @@ class DockStorage {
         });
       });
     }
-    this.setCurrentStageRoles(stageRoles);
-    this.setCurrentDramaRoles(dramaRoles);
+    this.setActiveKollectionRoles(kollectionRoles);
+    this.setActiveDramaRoles(dramaRoles);
+  }
+
+  private setBaseActorAndStage(dockStage: DockStage) {
+    if (dockStage.actor) {
+      this.setBaseActor(dockStage.actor);
+    }
+    if (dockStage.stage) {
+      const { id, name } = dockStage.stage;
+      this.setBaseStage(new ActiveStage(id, name, dockStage.kollections));
+    }
+
+    if (dockStage.kollections && dockStage.kollections.some(kollection => kollection.active)) {
+      const dockKollection = dockStage.kollections.find(kollection => kollection.active);
+      if (dockKollection) {
+        dockKollection.kollection.path = dockKollection.path;
+        this.setBaseKollectionsAndRoles(dockKollection);
+      }
+    } else if (dockStage.kollections && dockStage.kollections.length > 0) {
+      const dockKollection = dockStage.kollections[0];
+      dockKollection.kollection.path = dockKollection.path;
+      this.setBaseKollectionsAndRoles(dockKollection);
+    }
+  }
+
+  private setBaseKollectionsAndRoles(dockKollection: DockKollection) {
+    if (dockKollection.kollection && dockKollection.path) {
+      const baseKollection = new ActiveKollection(dockKollection.kollection.id, dockKollection.kollection.name, dockKollection.path);
+      this.setBaseKollection(baseKollection);
+    }
+
+    const kollectionRoles: string[] = [];
+    const dramaRoles: string[] = [];
+    if (dockKollection.kollectionRoles) {
+      dockKollection.kollectionRoles.forEach(kollectionRole => {
+        kollectionRoles.push(kollectionRole.code);
+        kollectionRole.dramaRoles.forEach(role => {
+          const roleCode = `${role.dramaId}:${role.code}`;
+          if (!dramaRoles.includes(roleCode)) {
+            dramaRoles.push(roleCode);
+          }
+        });
+      });
+    }
+    this.setBaseKollectionRoles(kollectionRoles);
+    this.setBaseDramaRoles(dramaRoles);
   }
 
   async updateDefaultStage(stageId: string) {
-    const currentAudience = this.currentAudience;
-    if (!currentAudience || !currentAudience.id) {
-      throw new NaraException('DockStorage.updateDefaultStage', 'current audience is required');
+    const activeAudience = this.activeAudience;
+    if (!activeAudience || !activeAudience.id) {
+      throw new NaraException('DockStorage.updateDefaultStage', 'active audience is required');
     }
 
     const defaultStage = this.defaultStage;
@@ -213,8 +290,8 @@ class DockStorage {
 
     // set default stage if needed
     if (defaultStage.id !== stageId) {
-      const stages: AvailableStage[] = [];
-      this.availableDock?.cinerooms.filter(cineroom => !!cineroom.stages).forEach(cineroom => stages.push(...cineroom.stages));
+      const stages: DockStage[] = [];
+      this.activeDock?.cinerooms.filter(cineroom => !!cineroom.stages).forEach(cineroom => stages.push(...cineroom.stages));
 
       const stage = stages.find(stage => stage.stage.id === stageId);
       if (!stage) {
@@ -223,11 +300,11 @@ class DockStorage {
           `cannot find stage with stage id = ${stageId}`,
         );
       }
-      this.setDefaultStage(new Current(stage.stage.id, stage.stage.name));
+      this.setDefaultStage(new ActiveInfo(stage.stage.id, stage.stage.name));
 
       if (!this.development) {
         this.stageContextFlowStateKeeper.modifyDefaultStage(
-          currentAudience?.id || '',
+          activeAudience?.id || '',
           stageId,
         );
       }
@@ -235,20 +312,20 @@ class DockStorage {
   }
 
   async toggleDefaultFirst(defaultFirst: boolean) {
-    const currentAudience = this.currentAudience;
-    if (!currentAudience || !currentAudience.id) {
-      throw new NaraException('DockStorage.updateDefaultStage', 'current audience is required');
+    const activeAudience = this.activeAudience;
+    if (!activeAudience || !activeAudience.id) {
+      throw new NaraException('DockStorage.updateDefaultStage', 'active audience is required');
     }
 
-    const currentDefaultFirst = this.defaultFirst;
+    const _defaultFirst = this.defaultFirst;
 
     // set default first for stage if needed
-    if (currentDefaultFirst !== defaultFirst) {
+    if (_defaultFirst !== defaultFirst) {
       this.setDefaultFirst(defaultFirst);
 
       if (!this.development) {
         this.stageContextFlowStateKeeper.toggleDefaultFirstForStage(
-          currentAudience?.id || '',
+          activeAudience?.id || '',
           defaultFirst,
         );
       }
@@ -256,48 +333,48 @@ class DockStorage {
   }
 
   private async verify() {
-    const availableDock = this.availableDock;
-    if (!availableDock || !availableDock.cinerooms) {
-      throw new NaraException('DockStorage.switchContext', 'available dock is required');
+    const activeDock = this.activeDock;
+    if (!activeDock || !activeDock.cinerooms) {
+      throw new NaraException('DockStorage.switchContext', 'active dock is required');
     }
 
-    const currentCitizen = this.currentCitizen;
-    if (!currentCitizen || !currentCitizen.id) {
-      throw new NaraException('DockStorage.switchContext', 'current citizen is required');
+    const activeCitizen = this.activeCitizen;
+    if (!activeCitizen || !activeCitizen.id) {
+      throw new NaraException('DockStorage.switchContext', 'active citizen is required');
     }
 
-    const currentAudience = this.currentAudience;
-    if (!currentAudience || !currentAudience.id) {
-      throw new NaraException('DockStorage.switchContext', 'current audience is required');
+    const activeAudience = this.activeAudience;
+    if (!activeAudience || !activeAudience.id) {
+      throw new NaraException('DockStorage.switchContext', 'active audience is required');
     }
 
-    const currentActor = this.currentActor;
-    if (!currentActor || !currentActor.id) {
-      throw new NaraException('DockStorage.switchContext', 'current actor is required');
+    const activeActor = this.activeActor;
+    if (!activeActor || !activeActor.id) {
+      throw new NaraException('DockStorage.switchContext', 'active actor is required');
     }
 
-    const currentStage = this.currentStage;
-    if (!currentStage || !currentStage.id) {
-      throw new NaraException('DockStorage.switchContext', 'current stage is required');
+    const activeStage = this.activeStage;
+    if (!activeStage || !activeStage.id) {
+      throw new NaraException('DockStorage.switchContext', 'active stage is required');
     }
 
-    const currentKollection = this.currentKollection;
-    if (!currentKollection || !currentKollection.id) {
-      throw new NaraException('DockStorage.switchContext', 'current kollection is required');
+    const activeKollection = this.activeKollection;
+    if (!activeKollection || !activeKollection.id) {
+      throw new NaraException('DockStorage.switchContext', 'active kollection is required');
     }
   }
 
   async switchStage(stageId: string) {
     await this.verify();
 
-    const availableDock = this.availableDock;
-    const currentCitizen = this.currentCitizen;
-    const currentAudience = this.currentAudience;
-    const currentActor = this.currentActor;
-    const currentStage = this.currentStage;
+    const activeDock = this.activeDock;
+    const activeCitizen = this.activeCitizen;
+    const activeAudience = this.activeAudience;
+    const activeActor = this.activeActor;
+    const activeStage = this.activeStage;
 
-    const cineroomId = StageKey.fromId(stageId || currentStage?.id || '').genCineroomId();
-    const nextCineroom = availableDock?.cinerooms.find(cineroom => cineroom.cineroom.id === cineroomId);
+    const cineroomId = StageKey.fromId(stageId || activeStage?.id || '').genCineroomId();
+    const nextCineroom = activeDock?.cinerooms.find(cineroom => cineroom.cineroom.id === cineroomId);
 
     if (!nextCineroom) {
       throw new NaraException(
@@ -307,38 +384,38 @@ class DockStorage {
     }
 
     // switch cineroom if changed
-    if (nextCineroom && nextCineroom.audience.id !== currentAudience?.id) {
-      this.setCurrentAudience(nextCineroom.audience);
-      this.setCurrentCineroom(nextCineroom.cineroom);
+    if (nextCineroom && nextCineroom.audience.id !== activeAudience?.id) {
+      this.setActiveAudience(nextCineroom.audience);
+      this.setActiveCineroom(nextCineroom.cineroom);
 
       if (!this.development) {
         this.cineroomContextFlowStateKeeper.modifyLatestCineroom(
-          currentCitizen?.id || '',
+          activeCitizen?.id || '',
           nextCineroom.cineroom.id,
         );
       }
     }
 
-    const stages: AvailableStage[] = [];
-    availableDock?.cinerooms.filter(cineroom => !!cineroom.stages).forEach(cineroom => stages.push(...cineroom.stages));
-    const nextStage = stages.find(stage => stage.stage.id === (stageId || currentStage?.id));
+    const stages: DockStage[] = [];
+    activeDock?.cinerooms.filter(cineroom => !!cineroom.stages).forEach(cineroom => stages.push(...cineroom.stages));
+    const nextStage = stages.find(stage => stage.stage.id === (stageId || activeStage?.id));
 
     if (!nextStage) {
       throw new NaraException(
         'DockStorage.switchContext',
-        `cannot find stage with stage id = ${(stageId || currentStage?.id)}`,
+        `cannot find stage with stage id = ${(stageId || activeStage?.id)}`,
       );
     }
 
     // switch stage if changed
-    if (nextStage && nextStage.actor.id !== currentActor?.id) {
-      this.setCurrentActor(nextStage.actor);
+    if (nextStage && nextStage.actor.id !== activeActor?.id) {
+      this.setActiveActor(nextStage.actor);
       const { id, name } = nextStage.stage;
-      this.setCurrentStage(new CurrentStage(id, name, nextStage.kollections));
+      this.setActiveStage(new ActiveStage(id, name, nextStage.kollections));
 
-      let nextKollection: AvailableKollection | undefined;
-      if (nextStage.kollections && nextStage.kollections.some(kollection => kollection.current)) {
-        nextKollection = nextStage.kollections.find(kollection => kollection.current);
+      let nextKollection: DockKollection | undefined;
+      if (nextStage.kollections && nextStage.kollections.some(kollection => kollection.active)) {
+        nextKollection = nextStage.kollections.find(kollection => kollection.active);
       } else if (nextStage.kollections && nextStage.kollections.length > 0) {
         nextKollection = nextStage.kollections[0];
       }
@@ -346,7 +423,7 @@ class DockStorage {
       if (!nextKollection) {
         throw new NaraException(
           'DockStorage.switchContext',
-          `cannot find kollection with stage id = ${(stageId || currentStage?.id)}`,
+          `cannot find kollection with stage id = ${(stageId || activeStage?.id)}`,
         );
       }
 
@@ -364,11 +441,11 @@ class DockStorage {
   async switchContext(url: string, name: string = '') {
     await this.verify();
 
-    const currentActor = this.currentActor;
-    const currentStage = this.currentStage;
-    const currentKollection = this.currentKollection;
+    const activeActor = this.activeActor;
+    const activeStage = this.activeStage;
+    const activeKollection = this.activeKollection;
 
-    const nextStage = currentStage;
+    const nextStage = activeStage;
     const nextKollection = nextStage?.kollections.find(kollection => url.includes(`${kollection.path}`));
 
     if (!nextKollection) {
@@ -379,23 +456,23 @@ class DockStorage {
     }
 
     // switch kollection if changed
-    if (nextKollection && nextKollection.kollection.id !== currentKollection?.id) {
-      this.setCurrentKollection(new CurrentKollection(nextKollection.kollection.id, nextKollection.kollection.name, nextKollection.path));
+    if (nextKollection && nextKollection.kollection.id !== activeKollection?.id) {
+      this.setActiveKollection(new ActiveKollection(nextKollection.kollection.id, nextKollection.kollection.name, nextKollection.path));
 
       const stageRoles: string[] = [];
       const dramaRoles: string[] = [];
-      if (nextKollection.stageRoles) {
-        nextKollection.stageRoles.forEach(stageRole => {
-          stageRoles.push(stageRole.code);
-          stageRole.dramaRoles.forEach(role => dramaRoles.push(`${role.dramaId}:${role.code}`));
+      if (nextKollection.kollectionRoles) {
+        nextKollection.kollectionRoles.forEach(kollectionRole => {
+          stageRoles.push(kollectionRole.code);
+          kollectionRole.dramaRoles.forEach(role => dramaRoles.push(`${role.dramaId}:${role.code}`));
         });
       }
-      this.setCurrentStageRoles(stageRoles);
-      this.setCurrentDramaRoles(dramaRoles);
+      this.setActiveKollectionRoles(stageRoles);
+      this.setActiveDramaRoles(dramaRoles);
 
       if (!this.development) {
         this.stageContextFlowStateKeeper.modifyLastScene(
-          currentActor?.id || '',
+          activeActor?.id || '',
           url,
           name,
         );
@@ -419,93 +496,135 @@ class DockStorage {
     this._loaded.save(loaded);
   }
 
-  get availableDock(): AvailableDockRdo | null {
-    return this._availableDock.load();
+  get activeDock(): ActiveDockRdo | null {
+    return this._activeDock.load();
   }
 
-  private setAvailableDock(value: AvailableDockRdo): void {
-    this._availableDock.save(value);
+  private setActiveDock(value: ActiveDockRdo): void {
+    this._activeDock.save(value);
   }
 
-  get currentCitizen(): Current | null {
-    return this._currentCitizen.load();
+  get activeCitizen(): ActiveInfo | null {
+    return this._activeCitizen.load();
   }
 
-  private setCurrentCitizen(value: Current): void {
-    this._currentCitizen.save(value);
+  private setActiveCitizen(value: ActiveInfo): void {
+    this._activeCitizen.save(value);
   }
 
-  get currentPavilion(): Current | null {
-    return this._currentPavilion.load();
+  get activePavilion(): ActiveInfo | null {
+    return this._activePavilion.load();
   }
 
-  private setCurrentPavilion(value: Current): void {
-    this._currentPavilion.save(value);
+  private setActivePavilion(value: ActiveInfo): void {
+    this._activePavilion.save(value);
   }
 
-  get currentAudience(): Current | null {
-    return this._currentAudience.load();
+  get activeAudience(): ActiveInfo | null {
+    return this._activeAudience.load();
   }
 
-  private setCurrentAudience(value: Current): void {
-    this._currentAudience.save(value);
+  private setActiveAudience(value: ActiveInfo): void {
+    this._activeAudience.save(value);
   }
 
-  get currentCineroom(): Current | null {
-    return this._currentCineroom.load();
+  get activeCineroom(): ActiveInfo | null {
+    return this._activeCineroom.load();
   }
 
-  private setCurrentCineroom(value: Current): void {
-    this._currentCineroom.save(value);
+  private setActiveCineroom(value: ActiveInfo): void {
+    this._activeCineroom.save(value);
   }
 
-  get currentActor(): Current | null {
-    return this._currentActor.load();
+  get activeActor(): ActiveInfo | null {
+    return this._activeActor.load();
   }
 
-  private setCurrentActor(value: Current): void {
-    this._currentActor.save(value);
+  private setActiveActor(value: ActiveInfo): void {
+    this._activeActor.save(value);
   }
 
-  get currentStage(): CurrentStage | null {
-    return this._currentStage.load();
+  get activeStage(): ActiveStage | null {
+    return this._activeStage.load();
   }
 
-  private setCurrentStage(value: CurrentStage): void {
-    this._currentStage.save(value);
+  private setActiveStage(value: ActiveStage): void {
+    this._activeStage.save(value);
   }
 
-  get currentKollection(): CurrentKollection | null {
-    return this._currentKollection.load();
+  get activeKollection(): ActiveKollection | null {
+    return this._activeKollection.load();
   }
 
-  private setCurrentKollection(value: CurrentKollection): void {
-    this._currentKollection.save(value);
+  private setActiveKollection(value: ActiveKollection): void {
+    this._activeKollection.save(value);
   }
 
-  get currentStageRoles(): string[] {
+  get activeKollectionRoles(): string[] {
     // @ts-ignore
-    return (this._currentStageRoles.load() || [])[0] || [];
+    return (this._activeKollectionRoles.load() || [])[0] || [];
   }
 
-  private setCurrentStageRoles(values: string[]): void {
-    this._currentStageRoles.save(values);
+  private setActiveKollectionRoles(values: string[]): void {
+    this._activeKollectionRoles.save(values);
   }
 
-  get currentDramaRoles(): string[] {
+  get activeDramaRoles(): string[] {
     // @ts-ignore
-    return (this._currentDramaRoles.load() || [])[0] || [];
+    return (this._activeDramaRoles.load() || [])[0] || [];
   }
 
-  private setCurrentDramaRoles(values: string[]): void {
-    this._currentDramaRoles.save(values);
+  private setActiveDramaRoles(values: string[]): void {
+    this._activeDramaRoles.save(values);
   }
 
-  get defaultStage(): Current | null {
+  get baseActor(): ActiveInfo | null {
+    return this._baseActor.load();
+  }
+
+  private setBaseActor(value: ActiveInfo): void {
+    this._baseActor.save(value);
+  }
+
+  get baseStage(): ActiveStage | null {
+    return this._baseStage.load();
+  }
+
+  private setBaseStage(value: ActiveStage): void {
+    this._baseStage.save(value);
+  }
+
+  get baseKollection(): ActiveKollection | null {
+    return this._baseKollection.load();
+  }
+
+  private setBaseKollection(value: ActiveKollection): void {
+    this._baseKollection.save(value);
+  }
+
+  get baseKollectionRoles(): string[] {
+    // @ts-ignore
+    return (this._baseKollectionRoles.load() || [])[0] || [];
+  }
+
+  private setBaseKollectionRoles(values: string[]): void {
+    this._baseKollectionRoles.save(values);
+  }
+
+  get baseDramaRoles(): string[] {
+    // @ts-ignore
+    return (this._baseDramaRoles.load() || [])[0] || [];
+  }
+
+  private setBaseDramaRoles(values: string[]): void {
+    this._baseDramaRoles.save(values);
+  }
+
+  get defaultStage(): ActiveInfo | null {
     return this._defaultStage.load();
   }
 
-  private setDefaultStage(value: Current): void {
+  private setDefaultStage(value: ActiveInfo): void {
     this._defaultStage.save(value);
   }
 

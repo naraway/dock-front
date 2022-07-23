@@ -1,5 +1,5 @@
 // @ts-ignore
-import { CurrentStage, DockDial } from '@nara-way/dock';
+import { ActiveStage, DockDial } from '@nara-way/dock';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import * as React from 'react';
 import { Box, Typography } from "@mui/material";
@@ -10,7 +10,7 @@ export default {
 } as ComponentMeta<typeof DockDial>;
 
 const Template: ComponentStory<typeof DockDial> = () => {
-  const handleStage = (stage: CurrentStage) => {
+  const handleStage = (stage: ActiveStage) => {
     console.log('stage', stage);
   };
 

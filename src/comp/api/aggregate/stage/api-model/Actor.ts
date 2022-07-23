@@ -1,22 +1,21 @@
-import { DomainEntity, EntityLifeCycle, NameValueList, NameValueType, StringList } from '@nara-way/accent';
+import { DomainEntity, EntityLifeCycle, IdNameList, NameValueList, NameValueType } from '@nara-way/accent';
 import ActorPreference from './vo/ActorPreference';
 
 class Actor extends DomainEntity {
   name: string;
   email: string;
   lifeCycle: EntityLifeCycle | null = null;
-  orgRoleKeys: StringList | null = null;
   stageId: string;
-  stageRoleIds: string[] = [];
   preference: ActorPreference | null = null;
-  audienceId: string | undefined;
+  cineroomRoleBooks: IdNameList | null = null;
+  citizenId: string | null = null;
+  audienceId: string | null = null;
 
-  constructor(name: string, email: string, stageId: string, stageRoleIds: string[]) {
+  constructor(name: string, email: string, stageId: string) {
     super();
     this.name = name;
     this.email = email;
     this.stageId = stageId;
-    this.stageRoleIds = stageRoleIds;
   }
 
   static fromDomain(domain: Actor): Actor {
@@ -24,13 +23,14 @@ class Actor extends DomainEntity {
       domain.name,
       domain.email,
       domain.stageId,
-      domain.stageRoleIds,
     );
 
     actor.setDomainEntity(domain);
     actor.lifeCycle = domain.lifeCycle;
-    actor.orgRoleKeys = domain.orgRoleKeys ? StringList.fromDomain(domain.orgRoleKeys) : null;
     actor.preference = domain.preference ? ActorPreference.fromDomain(domain.preference) : null;
+    actor.cineroomRoleBooks = domain.cineroomRoleBooks;
+    actor.audienceId = domain.audienceId ? domain.audienceId : null;
+    actor.citizenId = domain.citizenId ? domain.citizenId : null;
     return actor;
   }
 
@@ -42,15 +42,14 @@ class Actor extends DomainEntity {
     return NameValueList.fromModel(Actor, model, {
       name: NameValueType.String,
       email: NameValueType.String,
-      lifeCycle: NameValueType.Json,
+      lifeCycle: NameValueType.String,
       preference: NameValueType.Json,
-      orgRoleKeys: NameValueType.Json,
-      stageRoleIds: NameValueType.Json,
+      cineroomRoleBooks: NameValueType.Json,
     });
   }
 
   static new(): Actor {
-    return new Actor('', '', '', []);
+    return new Actor('', '', '');
   }
 
 }

@@ -1,44 +1,49 @@
-import { Actor, CineroomChart, Stage, StageRole } from "../../../../aggregate";
+import { Actor, CineroomChart, CineroomRoleBook, Stage } from '../../../../aggregate';
 
 class ActiveStageDockRdo {
+  //
   cineroomChart: CineroomChart;
   actor: Actor;
   stages: Stage[];
   stage: Stage;
-  stageRoles: StageRole[];
+  cineroomRoleBook: CineroomRoleBook;
 
   constructor(
     cineroomChart: CineroomChart,
     actor: Actor,
     stages: Stage[],
     stage: Stage,
-    stageRoles: StageRole[],
+    cineroomRoleBook: CineroomRoleBook,
   ) {
+    //
     this.cineroomChart = cineroomChart;
     this.actor = actor;
     this.stages = stages;
     this.stage = stage;
-    this.stageRoles = stageRoles;
+    this.cineroomRoleBook = cineroomRoleBook;
   }
 
   static fromDomain(domain: ActiveStageDockRdo): ActiveStageDockRdo {
+    //
     const activeStageDockRdo = new ActiveStageDockRdo(
       domain.cineroomChart,
       domain.actor,
       domain.stages,
       domain.stage,
-      domain.stageRoles,
+      domain.cineroomRoleBook,
     );
 
     return activeStageDockRdo;
   }
 
   static fromDomains(domains: ActiveStageDockRdo[]): ActiveStageDockRdo[] {
+    //
     return domains.map(domain => this.fromDomain(domain));
   }
 
   static new(): ActiveStageDockRdo {
-    return new ActiveStageDockRdo(CineroomChart.new(), Actor.new(), [], Stage.new(), []);
+    //
+    return new ActiveStageDockRdo(CineroomChart.new(), Actor.new(), [], Stage.new(), CineroomRoleBook.new());
   }
 }
 

@@ -1,7 +1,7 @@
 import { ApiClient, autobind } from '@nara-way/prologue';
 import { CineDock, StageDock } from '../../../../aggregate/dock';
-import { AvailableDockRdo } from '../../api-model';
-import { FindAvailableDockQuery, FindCurrentCineDockQuery, FindCurrentStageDockQuery } from '../query';
+import { ActiveDockRdo } from '../../api-model';
+import { FindActiveDockQuery, FindActiveCineDockQuery, FindActiveStageDockQuery } from '../query';
 
 class DockSeekApiStub {
   private static _instance: DockSeekApiStub;
@@ -21,26 +21,26 @@ class DockSeekApiStub {
     resDataName: 'queryResult',
   });
 
-  async findCurrentCineDock(query: FindCurrentCineDockQuery): Promise<CineDock | null> {
+  async findActiveCineDock(query: FindActiveCineDockQuery): Promise<CineDock | null> {
     return this.client.postNullable<CineDock>(
       CineDock,
-      '/find-current-cine-dock/query',
+      '/find-active-cine-dock/query',
       query,
     );
   }
 
-  async findCurrentStageDock(query: FindCurrentStageDockQuery): Promise<StageDock | null> {
+  async findActiveStageDock(query: FindActiveStageDockQuery): Promise<StageDock | null> {
     return this.client.postNullable<StageDock>(
       StageDock,
-      '/find-current-stage-dock/query',
+      '/find-active-stage-dock/query',
       query,
     );
   }
 
-  async findAvailableDock(query: FindAvailableDockQuery): Promise<AvailableDockRdo | null> {
-    return this.client.postNullable<AvailableDockRdo>(
-      AvailableDockRdo,
-      '/find-available-dock/query',
+  async findActiveDock(query: FindActiveDockQuery): Promise<ActiveDockRdo | null> {
+    return this.client.postNullable<ActiveDockRdo>(
+      ActiveDockRdo,
+      '/find-active-dock/query',
       query,
     );
   }
