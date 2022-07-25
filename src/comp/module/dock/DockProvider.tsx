@@ -16,6 +16,7 @@ export interface Dock {
   currentActor: ActiveInfo | null,
   currentStage: ActiveStage | null,
   currentKollection: ActiveKollection | null,
+  currentStageRoles: string[];
   currentKollectionRoles: string[];
   currentDramaRoles: string[];
   currentDramaRoleMap: {
@@ -62,6 +63,7 @@ export const DockContext = React.createContext<Dock>({
   currentActor: null,
   currentStage: null,
   currentKollection: null,
+  currentStageRoles: [],
   currentKollectionRoles: [],
   currentDramaRoles: [],
   currentDramaRoleMap: {},
@@ -111,6 +113,7 @@ const DockProvider = (props: {
     currentActor: null,
     currentStage: null,
     currentKollection: null,
+    currentStageRoles: [],
     currentKollectionRoles: [],
     currentDramaRoles: [],
     currentDramaRoleMap: {},
@@ -208,6 +211,7 @@ const DockProvider = (props: {
           currentActor: activeActor,
           currentStage: activeStage,
           currentKollection: activeKollection,
+          currentStageRoles: activeKollectionRoles,
           currentKollectionRoles: activeKollectionRoles,
           currentDramaRoles: activeDramaRoles,
           currentDramaRoleMap: activeDramaRoleMap,
@@ -311,12 +315,12 @@ const DockProvider = (props: {
             devdock.activeActor || devdock.currentActor || ActiveInfo.new(),
             devdock.activeStage || devdock.currentStage || ActiveStage.new(),
             devdock.activeKollection || devdock.currentKollection || ActiveKollection.new(),
-            devdock.activeKollectionRoles || devdock.currentKollectionRoles || [],
+            devdock.activeKollectionRoles || devdock.currentStageRoles || [],
             devdock.activeDramaRoles || devdock.currentDramaRoles || [],
             devdock.baseActor || devdock.activeActor || devdock.currentActor || ActiveInfo.new(),
             devdock.baseStage || devdock.activeStage || devdock.currentStage || ActiveStage.new(),
             devdock.baseKollection || devdock.activeKollection || devdock.currentKollection || ActiveKollection.new(),
-            devdock.baseKollectionRoles || devdock.activeKollectionRoles || devdock.currentKollectionRoles || [],
+            devdock.baseKollectionRoles || devdock.activeKollectionRoles || devdock.currentStageRoles || [],
             devdock.baseDramaRoles || devdock.activeDramaRoles || devdock.currentDramaRoles || [],
             development,
           );
@@ -384,6 +388,7 @@ const DockProvider = (props: {
       currentActor: activeActor,
       currentStage: activeStage,
       currentKollection: activeKollection,
+      currentStageRoles: activeKollectionRoles,
       currentKollectionRoles: activeKollectionRoles,
       currentDramaRoles: activeDramaRoles,
       currentDramaRoleMap: activeDramaRoleMap,
