@@ -1,22 +1,22 @@
-export const devdock = {
-  citizen: {id: '1@1:1:1', name: 'Nara User'},
+export const dock = {
+  citizen: {id: '1@1:1:1', name: 'Kim Nara'},
   pavilion: {id: '1:1:1', name: 'Nara Way'},
   cinerooms: [{
-    audience: {id: '1@1:1:1:1', name: 'Nara User'},
-    cineroom: {id: '1:1:1:1', name: 'Sales Group'},
+    audience: {id: '1@1:1:1:1', name: 'Kim Nara'},
+    cineroom: {id: '1:1:1:1', name: 'Sales'},
     current: false,
     stages: [{
-      actor: {id: '1@1:1:1:1-1', name: 'Nara User'},
+      actor: {id: '1@1:1:1:1-1', name: 'Kim Nara'},
       stage: {id: '1:1:1:1-1', name: 'Marketing'},
-      current: false,
+      active: false,
       kollections: [{
         kollection: {id: 'commerce_1.0.0', name: 'Commerce'},
         path: 'commerce',
-        current: false,
+        active: false,
         kollecties: [
           {path: 'product', name: 'Product', requiredRoles: []},
           {path: 'order', name: 'Order', requiredRoles: []}],
-        stageRoles: [{
+        kollectionRoles: [{
           stageId: '1:1:1:1-1',
           kollectionVersionId: 'commerce_1.0.0',
           code: 'manager',
@@ -27,17 +27,17 @@ export const devdock = {
         }]
       }]
     }, {
-      actor: {id: '1@1:1:1:1-2', name: 'Nara User'},
+      actor: {id: '1@1:1:1:1-2', name: 'Kim Nara'},
       stage: {id: '1:1:1:1-2', name: 'Stock'},
-      current: false,
+      active: false,
       kollections: [{
-        kollection: {id: 'stock_1.0.0', name: 'Stock Management'},
+        kollection: {id: 'stock_1.0.0', name: 'Stock'},
         path: 'stock',
-        current: false,
+        active: false,
         kollecties: [
           {path: 'product', name: 'Product', requiredRoles: []},
           {path: 'order', name: 'Order', requiredRoles: []}],
-        stageRoles: [{
+        kollectionRoles: [{
           stageId: '1:1:1:1-2',
           kollectionVersionId: 'stock_1.0.0',
           code: 'manager',

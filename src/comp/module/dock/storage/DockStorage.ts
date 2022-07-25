@@ -459,15 +459,15 @@ class DockStorage {
     if (nextKollection && nextKollection.kollection.id !== activeKollection?.id) {
       this.setActiveKollection(new ActiveKollection(nextKollection.kollection.id, nextKollection.kollection.name, nextKollection.path));
 
-      const stageRoles: string[] = [];
+      const kollectionRoles: string[] = [];
       const dramaRoles: string[] = [];
       if (nextKollection.kollectionRoles) {
         nextKollection.kollectionRoles.forEach(kollectionRole => {
-          stageRoles.push(kollectionRole.code);
+          kollectionRoles.push(kollectionRole.code);
           kollectionRole.dramaRoles.forEach(role => dramaRoles.push(`${role.dramaId}:${role.code}`));
         });
       }
-      this.setActiveKollectionRoles(stageRoles);
+      this.setActiveKollectionRoles(kollectionRoles);
       this.setActiveDramaRoles(dramaRoles);
 
       if (!this.development) {
