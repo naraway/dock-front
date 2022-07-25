@@ -264,7 +264,7 @@ const DockProvider = (props: {
     // dev only
     if (development && devdock) {
       if (!dock || !dock.activeActor) {
-        const { activeDramaRoles, baseDramaRoles } = devdock;
+        const { activeDramaRoles = [], baseDramaRoles = [] } = devdock;
 
         const activeDramaRoleMap: {[key: string]: string[]} = {};
         activeDramaRoles.forEach(activeDramaRole => {
@@ -338,12 +338,12 @@ const DockProvider = (props: {
       activeStage,
       activeKollection,
       activeKollectionRoles,
-      activeDramaRoles,
+      activeDramaRoles = [],
       baseActor,
       baseStage,
       baseKollection,
       baseKollectionRoles,
-      baseDramaRoles,
+      baseDramaRoles = [],
       loaded,
     } = ref.current;
 
