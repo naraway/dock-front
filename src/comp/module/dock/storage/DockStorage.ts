@@ -71,7 +71,7 @@ class DockStorage {
   }
 
   setDock(
-    activeDock: ActiveDockRdo,
+    actriveDock: ActiveDockRdo,
     defaultStage: ActiveInfo,
     defaultFirst: boolean,
     activeCitizen: ActiveInfo,
@@ -90,7 +90,7 @@ class DockStorage {
     baseDramaRoles: string[],
     development: boolean = false,
   ) {
-    this.setActiveDock(activeDock);
+    this.setActiveDock(actriveDock);
     this.setDefaultStage(defaultStage);
     this.setDefaultFirst(defaultFirst);
     this.setActivePavilion(activePavilion);
@@ -211,7 +211,12 @@ class DockStorage {
 
   private setActiveKollectionsAndRoles(dockKollection: DockKollection) {
     if (dockKollection.kollection && dockKollection.path) {
-      const activeKollection = new ActiveKollection(dockKollection.kollection.id, dockKollection.kollection.name, dockKollection.path);
+      const activeKollection = new ActiveKollection(
+        dockKollection.kollection.id,
+        dockKollection.kollection.name,
+        dockKollection.path,
+        dockKollection.kollecties,
+      );
       this.setActiveKollection(activeKollection);
     }
 
@@ -256,7 +261,12 @@ class DockStorage {
 
   private setBaseKollectionsAndRoles(dockKollection: DockKollection) {
     if (dockKollection.kollection && dockKollection.path) {
-      const baseKollection = new ActiveKollection(dockKollection.kollection.id, dockKollection.kollection.name, dockKollection.path);
+      const baseKollection = new ActiveKollection(
+        dockKollection.kollection.id,
+        dockKollection.kollection.name,
+        dockKollection.path,
+        dockKollection.kollecties
+      );
       this.setBaseKollection(baseKollection);
     }
 
@@ -457,7 +467,12 @@ class DockStorage {
 
     // switch kollection if changed
     if (nextKollection && nextKollection.kollection.id !== activeKollection?.id) {
-      this.setActiveKollection(new ActiveKollection(nextKollection.kollection.id, nextKollection.kollection.name, nextKollection.path));
+      this.setActiveKollection(new ActiveKollection(
+        nextKollection.kollection.id,
+        nextKollection.kollection.name,
+        nextKollection.path,
+        nextKollection.kollecties,
+      ));
 
       const kollectionRoles: string[] = [];
       const dramaRoles: string[] = [];
