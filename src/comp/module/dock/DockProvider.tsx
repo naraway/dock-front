@@ -9,16 +9,27 @@ export interface Dock {
   defaultStage: ActiveInfo | null,
   defaultFirst: boolean,
   // for legacy start
+  /** @deprecated */
   currentCitizen: ActiveInfo | null,
+  /** @deprecated */
   currentPavilion: ActiveInfo | null,
+  /** @deprecated */
   currentAudience: ActiveInfo | null,
+  /** @deprecated */
   currentCineroom: ActiveInfo | null,
+  /** @deprecated */
   currentActor: ActiveInfo | null,
+  /** @deprecated */
   currentStage: ActiveStage | null,
+  /** @deprecated */
   currentKollection: ActiveKollection | null,
+  /** @deprecated */
   currentStageRoles: string[];
+  /** @deprecated */
   currentKollectionRoles: string[];
+  /** @deprecated */
   currentDramaRoles: string[];
+  /** @deprecated */
   currentDramaRoleMap: {
     [key: string]: string[],
   },
