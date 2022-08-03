@@ -2,7 +2,6 @@ import React from 'react';
 import { ActiveStage } from '../../../module';
 import WorkspaceView from './view/WorkspaceView';
 
-
 const DockMenuButtonContainer =
   ({
      onLogin = () => undefined,

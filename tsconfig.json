@@ -27,8 +27,7 @@
     "strictPropertyInitialization": true,
     "useDefineForClassFields": true,
     "paths": {
-      "~/*": ["*"],
-      "@nara-way/dock": ["comp"]
+      "~/*": ["*"]
     },
     "plugins": [{
       "transform": "typescript-transform-paths",
@@ -36,7 +35,7 @@
     }]
   },
   "include": [
-    "src/comp",
+    "src/comp"
   ],
   "exclude": [
     "node_modules"

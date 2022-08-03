@@ -44,7 +44,7 @@ class DockFlowStateKeeper {
     this.currentStageDock = null;
   }
 
-  async findAvailableDockWithCitizenId(
+  async findActiveDockWithCitizenId(
     citizenUserId: string,
   ): Promise<ActiveDockRdo | null> {
     const query = FindActiveDockQuery.byCitizenUserId(citizenUserId);

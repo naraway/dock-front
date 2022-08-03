@@ -3,7 +3,6 @@ import React from 'react';
 import { ActiveStage } from '../../../module';
 import WorkspaceView from './view/WorkspaceView';
 
-
 const DockDialContainer =
   ({
      onLogin = () => undefined,
