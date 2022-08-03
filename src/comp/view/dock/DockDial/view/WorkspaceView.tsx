@@ -1,10 +1,10 @@
 import {
   ApartmentOutlined as PavilionIcon,
-  ArtTrackOutlined as StageIcon,
+  ArtTrackOutlined as StageIcon, DownloadDoneOutlined,
   ExpandMore,
   Grid3x3Outlined,
   LoginOutlined,
-  LogoutOutlined,
+  LogoutOutlined, MultipleStopOutlined,
   PersonOutline,
   PictureInPictureAltOutlined,
   Public as StationIcon,
@@ -14,21 +14,21 @@ import {
 } from '@mui/icons-material';
 import { Box, Button, Divider, IconButton, Popover, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import { TenantType } from '@nara-way/accent';
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { ActiveStage, useAuth, useDock } from '../../../../module';
 import { TreeItem } from '../model';
 import DefaultStageDialogView from './DefaultStageDialogView';
-
+import { grey } from '@mui/material/colors';
 
 const WorkspaceView =
   ({
      onStage = (stage: ActiveStage) => undefined,
-     onLogout = () => undefined,
      onLogin = () => undefined,
+     onLogout = () => undefined,
    }: {
     onStage?: (stage: ActiveStage) => void,
-    onLogout?: () => void,
     onLogin?: () => void,
+    onLogout?: () => void,
   }) => {
     const theme = useTheme();
     const auth = useAuth();
@@ -55,15 +55,15 @@ const WorkspaceView =
       await setState({ ...state, anchorEl: event.target as HTMLButtonElement, open: !state.open });
     };
 
-    const handleClickLogout = async () => {
-      if (onLogout) {
-        onLogout();
-      }
-    };
-
     const handleClickLogin = () => {
       if (onLogin) {
         onLogin();
+      }
+    };
+
+    const handleClickLogout = async () => {
+      if (onLogout) {
+        onLogout();
       }
     };
 
@@ -80,25 +80,14 @@ const WorkspaceView =
     };
 
     const { anchorEl, open } = state;
-
-    const handleClose = () => {
-      setState({ ...state, open: !state.open });
-    };
+    const handleClose = () => setState({ ...state, open: !state.open });
 
     const [defaultOpen, setDefaultOpen] = useState(false);
-    const handleClickDefault = () => {
-      setDefaultOpen(true);
-    };
+    const handleClickDefault = () => setDefaultOpen(true);
+    const handleDefaultCancel = () => setDefaultOpen(false);
+    const handleDefaultOk = () => setDefaultOpen(false);
 
-    const handleDefaultCancel = () => {
-      setDefaultOpen(false);
-    };
-
-    const handleDefaultOk = () => {
-      setDefaultOpen(false);
-    };
-
-    const getTree = (): TreeItem => {
+    const getTree = () => {
       const tree: TreeItem = {
         id: '',
         name: '',
@@ -107,13 +96,11 @@ const WorkspaceView =
         children: [],
       };
 
-      if (!dock || !dock.activeDock) {
+      if (!dock.activeDock) {
         return tree;
       }
 
-      const space = dock.activeDock;
-
-      const pavilion = space.pavilion;
+      const pavilion = dock.activeDock.pavilion;
       if (pavilion) {
         tree.id = pavilion.id;
         tree.name = pavilion.name;
@@ -121,7 +108,7 @@ const WorkspaceView =
         tree.accessible = false;
       }
 
-      const cinerooms = space.cinerooms;
+      const cinerooms = dock.activeDock.cinerooms;
       if (cinerooms) {
         cinerooms.forEach(cineroom => {
           const cineroomTree: TreeItem = {
@@ -172,21 +159,15 @@ const WorkspaceView =
     const getIcon = (type?: TenantType) => {
       switch (type) {
         case TenantType.Station:
-          return <StationIcon fontSize="small" color="action"
-                              style={{ paddingTop: '4px', marginBottom: '-6px', marginRight: '4px' }}/>;
+          return <StationIcon color="action" sx={{ pt: '4px', mb: '-6px', mr: '4px' }}/>;
         case TenantType.Pavilion:
-          return <PavilionIcon fontSize="small" color="action"
-                               style={{ paddingTop: '4px', marginBottom: '-6px', marginRight: '4px' }}/>;
+          return <PavilionIcon color="action" sx={{ pt: '4px', mb: '-6px', mr: '4px' }}/>;
         case TenantType.Cineroom:
-          return <CineroomIcon fontSize="small" color="action"
-                               style={{ paddingTop: '4px', marginBottom: '-6px', marginRight: '4px' }}/>;
+          return <CineroomIcon color="action" sx={{ pt: '4px', mb: '-6px', mr: '4px' }}/>;
         case TenantType.Stage:
-          return <StageIcon fontSize="small" color="primary"
-                            style={{ paddingTop: '4px', marginBottom: '-6px', marginRight: '4px' }}/>;
+          return <StageIcon color="primary" sx={{ pt: '4px', mb: '-6px', mr: '4px' }}/>;
       }
-
-      return <UnknownIcon fontSize="small" color="secondary"
-                          style={{ paddingTop: '4px', marginBottom: '-6px', marginRight: '4px' }}/>;
+      return <UnknownIcon color="secondary" sx={{ pt: '4px', mb: '-6px', mr: '4px' }}/>;
     };
 
     const findStage = (stageId: string) => {
@@ -212,26 +193,27 @@ const WorkspaceView =
           tree.id === dock.activeStage?.id ? (
             <Box
               key={tree.id}
-              style={{
+              sx={{
+                color: (tree.accessible ? theme.palette.primary.main : theme.palette.text.primary),
                 cursor: (tree.accessible ? 'pointer' : 'default'),
-                color: (tree.accessible ? '#000' : '#999'),
               }}
               display="flex"
               justifyContent="flex-start"
             >
               <Typography
-                style={{
+                sx={{
                   cursor: tree.id === dock.activeStage?.id ? 'default' : 'pointer',
                   display: 'inline-block',
                   fontSize: '14px',
                   marginLeft: theme.spacing(7),
                   verticalAlign: 'middle',
                   padding: theme.spacing(1),
-                  color: theme.palette.primary.main,
                 }}
               >
                 {tree.type === TenantType.Stage ? (
-                  <b>{tree.name}</b>
+                  <Box sx={{ fontWeight: 'normal', color: theme.palette.primary.main }}>
+                    {tree.name}
+                  </Box>
                 ) : (
                   tree.name
                 )}
@@ -251,15 +233,15 @@ const WorkspaceView =
               onClick={() => handleClickStage(findStage(tree.id))}
             >
               <Box
-                style={{
+                sx={{
+                  color: (tree.accessible ? theme.palette.primary.main : theme.palette.text.primary),
                   cursor: (tree.accessible ? 'pointer' : 'default'),
-                  color: (tree.accessible ? '#000' : '#999'),
                 }}
                 display="flex"
                 justifyContent="flex-start"
               >
                 <Typography
-                  style={{
+                  sx={{
                     cursor: tree.id === dock.activeStage?.id ? 'default' : 'pointer',
                     display: 'inline-block',
                     fontSize: '14px',
@@ -269,7 +251,9 @@ const WorkspaceView =
                   }}
                 >
                   {tree.type === TenantType.Stage ? (
-                    <b style={{ color: '#000' }}>{tree.name}</b>
+                    <Box sx={{ fontWeight: 'bold', color: theme.palette.text.primary }}>
+                      {tree.name}
+                    </Box>
                   ) : (
                     tree.name
                   )}
@@ -287,15 +271,15 @@ const WorkspaceView =
         >
           <Box
             style={{
+              color: (tree.accessible ? (theme.palette.mode === 'light' ? grey[900] : grey[50]) : grey[500]),
               cursor: (tree.accessible ? 'pointer' : 'default'),
-              color: (tree.accessible ? '#000' : '#999'),
             }}
             display="flex"
             justifyContent="flex-start"
           >
             <ExpandMore/>
             <Typography
-              style={{
+              sx={{
                 display: 'inline-block',
                 fontSize: '15px',
                 marginLeft: theme.spacing(2),
@@ -306,7 +290,7 @@ const WorkspaceView =
             >
               {tree.name}
             </Typography>
-            <Box style={{ position: 'absolute', right: '10px' }}>
+            <Box sx={{ position: 'absolute', right: 10 }}>
               {getIcon(tree.type)}
             </Box>
           </Box>
@@ -320,11 +304,11 @@ const WorkspaceView =
     };
 
     return (
-      <>
+      <Fragment>
         <Tooltip title="Context" placement="top">
           <IconButton
             color="inherit"
-            size={"large"}
+            size="large"
             onClick={handleWorkspaceContext}
           >
             <Grid3x3Outlined/>
@@ -344,37 +328,30 @@ const WorkspaceView =
           onClick={handleClose}
           onClose={handleClose}
         >
-          {auth && auth.loggedIn && dock && dock.activeCineroom && dock.activeStage && (
-            <>
+          {auth.loggedIn && dock.activeCineroom && dock.activeStage && (
+            <Fragment>
               <Box
-                display={'flex'}
-                justifyContent={'space-between'}
-                alignItems={'center'}
-                sx={{
-                  marginLeft: 2,
-                  marginRight: 4,
-                  marginTop: 1,
-                  marginBottom: 1,
-                }}
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                sx={{ ml: 2, mr: 4, mt: 1, mb: 1 }}
               >
                 <Box
-                  justifyContent={'flex-start'}
-                  display={'inline-flex'}
-                  alignItems={'center'}
+                  justifyContent="flex-start"
+                  display="inline-flex"
+                  alignItems="center"
                 >
-                  <PictureInPictureAltOutlined sx={{ marginLeft: 1, marginRight: 2 }}/>
-                  <Typography variant={'body2'}>
+                  <PictureInPictureAltOutlined sx={{ ml: 1, mr: 2 }}/>
+                  <Typography variant="body2">
                     {`${dock.activeCineroom.name} > ${dock.activeStage.name}`}
                   </Typography>
                 </Box>
-                <Tooltip title={'Set default...'}>
+                <Tooltip title="Set default...">
                   <IconButton
                     onClick={handleClickDefault}
-                    sx={{
-                      marginRight: '-10px',
-                    }}
+                    sx={{ mr: '-10px' }}
                   >
-                    <PushPinOutlined fontSize={'small'}/>
+                    <PushPinOutlined/>
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -394,42 +371,33 @@ const WorkspaceView =
                 <Button
                   fullWidth
                   color="inherit"
-                  startIcon={<LogoutOutlined fontSize="small"/>}
+                  startIcon={<LogoutOutlined/>}
                   onClick={handleClickLogout}
                   sx={{ padding: 2 }}>
                   Logout
                 </Button>
               </Box>
-            </>
+            </Fragment>
           )}
           {(!auth || !auth.loggedIn) && (
             <>
               <Stack
                 direction="row"
                 spacing={2}
-                sx={{
-                  marginLeft: 2,
-                  marginRight: 4,
-                  marginTop: 2,
-                  marginBottom: 2,
-                }}
-                alignItems={'center'}
+                alignItems="center"
+                sx={{ ml: 2, mr: 4, mt: 2, mb: 2 }}
               >
-                <PersonOutline sx={{ marginLeft: 1 }}/>
-                <Typography variant={'body2'}>
+                <PersonOutline sx={{ ml: 1 }}/>
+                <Typography variant="body2">
                   Please Login.
                 </Typography>
               </Stack>
               <Divider/>
-              <Box
-                sx={{
-                  width: '240px',
-                }}
-              >
+              <Box sx={{ width: '240px' }}>
                 <Button
                   fullWidth
                   color="inherit"
-                  startIcon={<LoginOutlined fontSize="small"/>}
+                  startIcon={<LoginOutlined/>}
                   onClick={handleClickLogin}
                   sx={{ padding: 2 }}>
                   Login
@@ -445,7 +413,7 @@ const WorkspaceView =
             onClickOk={handleDefaultOk}
           />
         )}
-      </>
+      </Fragment>
     );
   };
 

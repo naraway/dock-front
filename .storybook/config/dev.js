@@ -25,7 +25,7 @@ export const devauth = {
 };
 
 export const devdock = {
-  dock,
+  activeDock: dock,
   activePavilion: dock.pavilion,
   activeCitizen: dock.citizen,
   activeCineroom: dock.cinerooms[0].cineroom,

@@ -2,13 +2,12 @@ import * as React from "react";
 import {configure, isObservableArray} from 'mobx';
 import {AppContext, dialogUtil} from "@nara-way/prologue";
 import {AuthProvider, DockProvider} from "@nara-way/dock";
-import {default as theme} from './config/theme';
+import {darkTheme, lightTheme} from './config/theme';
 import {default as DialogView} from './config/dialog';
 import {devauth, devdock} from './config/dev';
 import {ThemeProvider} from "@mui/material";
 
 configure({
-  //
   useProxies: 'ifavailable',
   isolateGlobalState: true,
   computedRequiresReaction: true,
@@ -16,7 +15,6 @@ configure({
 });
 
 (() => {
-  //
   const isArray = Array.isArray;
   Object.defineProperty(Array, 'isArray', {
     value: (target) => (isObservableArray(target) || isArray(target)),
@@ -24,7 +22,6 @@ configure({
 })();
 
 export const parameters = {
-  //
   actions: {argTypesRegex: '^on[A-Z].*'},
   controls: {
     matchers: {
@@ -34,11 +31,15 @@ export const parameters = {
   },
 };
 
+// export const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+export const darkMode = false;
+const theme = darkMode ? darkTheme : lightTheme;
+
 export const decorators = [
   Story => {
-    //
+    window.document.body.style.backgroundColor = theme.palette.background.default;
     return (
-      <div>
+      <div style={{ color: theme.palette.text.primary }}>
         <AppContext.Provider>
           <ThemeProvider theme={theme}>
             <dialogUtil.Viewer renderDialog={(params) => (<DialogView {...params} />)}/>

@@ -71,7 +71,7 @@ class DockStorage {
   }
 
   setDock(
-    actriveDock: ActiveDockRdo,
+    activeDock: ActiveDockRdo,
     defaultStage: ActiveInfo,
     defaultFirst: boolean,
     activeCitizen: ActiveInfo,
@@ -90,7 +90,7 @@ class DockStorage {
     baseDramaRoles: string[],
     development: boolean = false,
   ) {
-    this.setActiveDock(actriveDock);
+    this.setActiveDock(activeDock);
     this.setDefaultStage(defaultStage);
     this.setDefaultFirst(defaultFirst);
     this.setActivePavilion(activePavilion);
@@ -111,19 +111,19 @@ class DockStorage {
     this.setLoaded(true);
   }
 
-  async findAvailableDockWithCitizenId(citizenId: string): Promise<ActiveDockRdo> {
-    const activeDock = await this.dockFlowStateKeeper.findAvailableDockWithCitizenId(citizenId);
-    return await this.findAvailableDock(activeDock);
+  async findActiveDockWithCitizenId(citizenId: string): Promise<ActiveDockRdo> {
+    const activeDock = await this.dockFlowStateKeeper.findActiveDockWithCitizenId(citizenId);
+    return await this.findActiveDock(activeDock);
   }
 
-  async findAvailableDockWithEmailAndPavilionId(email: string, pavilionId: string): Promise<ActiveDockRdo> {
+  async findActiveDockWithEmailAndPavilionId(email: string, pavilionId: string): Promise<ActiveDockRdo> {
     const activeDock = await this.dockFlowStateKeeper.findAvailableDockWithEmailAndPavilionId(email, pavilionId);
-    return await this.findAvailableDock(activeDock);
+    return await this.findActiveDock(activeDock);
   }
 
-  async findAvailableDock(activeDock: ActiveDockRdo | null): Promise<ActiveDockRdo> {
+  async findActiveDock(activeDock: ActiveDockRdo | null): Promise<ActiveDockRdo> {
     if (!activeDock) {
-      throw new NaraException('DockStorage.findAvailableDock', 'cannot find active dock');
+      throw new NaraException('DockStorage.findActiveDock', 'cannot find active dock');
     }
 
     this.setLoaded(true);
@@ -152,6 +152,8 @@ class DockStorage {
       const dockCineroom = activeDock.cinerooms[0];
       this.setActiveAudienceAndCineroom(dockCineroom);
     }
+
+    debugger
 
     return activeDock;
   }

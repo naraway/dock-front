@@ -19,7 +19,7 @@ import { useDock } from '../../../../module';
 
 const DefaultStageDialogView =
   ({
-     open = false,
+     open,
      onClickCancel,
      onClickOk,
    }: {
@@ -53,23 +53,19 @@ const DefaultStageDialogView =
     return (
       <Dialog open={open} maxWidth="xs">
         <DialogTitle>
-          <Box
-            display={'flex'}
-            justifyContent={'space-between'}
-          >
-            Default stage
-            <IconButton onClick={handleClickCancel}>
-              <CloseOutlined fontSize={'small'}/>
-            </IconButton>
+          <Box display="flex" justifyContent="space-between">
+            Default Work Team
+            <IconButton onClick={handleClickCancel}><CloseOutlined/></IconButton>
           </Box>
         </DialogTitle>
         <DialogContent>
-          <Grid container spacing={2} sx={{ marginTop: 2 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}/>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 contentEditable={false}
-                label={'Cineroom'}
+                label="Project team"
                 value={dock.activeCineroom?.name}
                 inputProps={{ readOnly: true }}
               />
@@ -78,7 +74,7 @@ const DefaultStageDialogView =
               <TextField
                 fullWidth
                 contentEditable={false}
-                label={'Stage'}
+                label="Work team"
                 value={dock.activeStage?.name}
                 inputProps={{ readOnly: true }}
               />
@@ -90,9 +86,8 @@ const DefaultStageDialogView =
                   label="Set as default"
                 />
                 <FormHelperText>
-                  If turned on, next login use default cineroom as set.
-                  <br/>
-                  Or else, next login use latest default cineroom as set.
+                  If the default switch is turned on, you use it as the default project team on login.
+                  Or else, you use the latest project team on login.
                 </FormHelperText>
               </FormGroup>
             </Grid>
@@ -101,7 +96,7 @@ const DefaultStageDialogView =
         <DialogActions>
           <Box mr={2} mb={2} ml={2}>
             <Button
-              color={'primary'}
+              color="primary"
               onClick={handleClickCancel}
             >
               Cancel
