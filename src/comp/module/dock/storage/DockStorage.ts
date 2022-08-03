@@ -153,8 +153,6 @@ class DockStorage {
       this.setActiveAudienceAndCineroom(dockCineroom);
     }
 
-    debugger
-
     return activeDock;
   }
 
