@@ -31,8 +31,7 @@ export const parameters = {
   },
 };
 
-// export const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-export const darkMode = false;
+export const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 const theme = darkMode ? darkTheme : lightTheme;
 
 export const decorators = [
