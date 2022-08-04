@@ -1,7 +1,6 @@
 import { NameValueList, DomainEntity } from '@nara-way/accent';
 import { CineroomRole } from '~/comp';
 
-
 class CineroomRoleBook extends DomainEntity {
   name: string;
   description: string;
