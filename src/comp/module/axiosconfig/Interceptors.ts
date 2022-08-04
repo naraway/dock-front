@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiClient } from "@nara-way/prologue";
-import { CitizenLoginResponse } from "@nara-way/checkpoint";
+import { CitizenAuthStorage, CitizenLoginResponse, ServantAuthStorage } from '@nara-way/checkpoint';
+import { DramaException } from '@nara-way/accent';
 
 export type Interceptor = {
   request?: {
@@ -38,29 +39,42 @@ export const accessTokenInterceptor: Interceptor = {
   response: {
     onRejected: (error) => {
       // retry interceptor when token expired
-      if (error.config && error.response && error.response.status === 401) {
-        return refreshToken().then((response) => {
-          const result = response.getQueryResult();
-          const accessToken = result.accessToken;
-          const refreshToken = result.refreshToken;
+      if (error?.config && error?.response?.status === 401) {
+        return getRefreshToken().then((response) => {
+          try {
+            const result = response.getQueryResult();
+            const accessToken = result.accessToken;
+            const refreshToken = result.refreshToken;
 
-          window.sessionStorage.setItem('nara.accessToken', accessToken);
-          window.localStorage.setItem('nara.accessToken', accessToken);
+            window.sessionStorage.setItem('nara.accessToken', accessToken);
+            window.localStorage.setItem('nara.accessToken', accessToken);
 
-          window.sessionStorage.setItem('nara.refreshToken', refreshToken);
-          window.localStorage.setItem('nara.refreshToken', refreshToken);
+            window.sessionStorage.setItem('nara.refreshToken', refreshToken);
+            window.localStorage.setItem('nara.refreshToken', refreshToken);
 
-          error.config.headers.Authorization = `Bearer ${accessToken}`;
-          return axios.request(error.config);
+            error.config.headers.Authorization = `Bearer ${accessToken}`;
+
+            return axios.request(error.config);
+          } catch (e) {
+            console.log('refresh token error', e);
+          }
+        }).catch((e) => {
+          // error while getting refresh token, logout
+          CitizenAuthStorage.instance.clear();
+          ServantAuthStorage.instance.clear();
         })
       }
     },
   },
 };
 
-const refreshToken = async () => {
+const getRefreshToken = async () => {
   const key = 'nara.refreshToken';
   const token = window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
+
+  if (!token) {
+    throw new DramaException('Interceptors.getRefreshToken', 'No refresh token found');
+  }
 
   const config = {
     headers: {
@@ -77,18 +91,19 @@ const refreshToken = async () => {
   data.append('refresh_token', token || '');
 
   const oauthClient = new ApiClient('/api/checkpoint');
-  return await oauthClient.postNotNull<CitizenLoginResponse>(CitizenLoginResponse, '/oauth/token', data, config);
+
+  return await oauthClient.postNotNull<CitizenLoginResponse>(CitizenLoginResponse, '/oauth/token', data, config)
 };
 
 export const actorIdInterceptor: Interceptor = {
   request: {
     onFulfilled: (config) => {
-      const key = 'nara.currentActor';
-      const currentActor = window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
+      const key = 'nara.activeActor';
+      const activeActor = window.sessionStorage.getItem(key) || window.localStorage.getItem(key);
 
-      if (currentActor) {
+      if (activeActor) {
         if ((console as any).debugging) console.debug('[axiosconfig:Interceptors;actorIdInterceptor] actorId exists');
-        const actorId = JSON.parse(currentActor).id;
+        const actorId = JSON.parse(activeActor).id;
         const prevHeaders = config.headers || {};
         const headers = { ...prevHeaders, actorId };
         config.headers = headers;

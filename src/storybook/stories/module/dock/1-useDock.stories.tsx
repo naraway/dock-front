@@ -24,22 +24,22 @@ const Template: ComponentStory<typeof useDock> = () => {
       <pre>
         {JSON.stringify({ ...dock }, null, 2)}
       </pre>
-      {dock.currentActor && (
+      {dock.activeActor && (
         <>
           <Typography variant={'h5'}>member keys</Typography>
           <pre>
-            <p>  - actorId: {ActorKey.fromId(dock.currentActor.id).id}</p>
-            <p>  - audienceId: {ActorKey.fromId(dock.currentActor.id).genAudienceId()}</p>
-            <p>  - citizenId: {ActorKey.fromId(dock.currentActor.id).genCitizenId()}</p>
-            <p>  - denizenId: {ActorKey.fromId(dock.currentActor.id).genDenizenId()}</p>
+            <p>  - actorId: {ActorKey.fromId(dock.activeActor.id).id}</p>
+            <p>  - audienceId: {ActorKey.fromId(dock.activeActor.id).genAudienceId()}</p>
+            <p>  - citizenId: {ActorKey.fromId(dock.activeActor.id).genCitizenId()}</p>
+            <p>  - denizenId: {ActorKey.fromId(dock.activeActor.id).genDenizenId()}</p>
           </pre>
           <Typography variant={'h5'}>space keys</Typography>
           <pre>
-            <p>  - stageId: {ActorKey.fromId(dock.currentActor.id).genStageId()}</p>
-            <p>  - cineroomId: {ActorKey.fromId(dock.currentActor.id).genCineroomId()}</p>
-            <p>  - pavilionId: {ActorKey.fromId(dock.currentActor.id).genPavilionId()}</p>
-            <p>  - squareId: {ActorKey.fromId(dock.currentActor.id).genSquareId()}</p>
-            <p>  - stationId: {ActorKey.fromId(dock.currentActor.id).genStationId()}</p>
+            <p>  - stageId: {ActorKey.fromId(dock.activeActor.id).genStageId()}</p>
+            <p>  - cineroomId: {ActorKey.fromId(dock.activeActor.id).genCineroomId()}</p>
+            <p>  - pavilionId: {ActorKey.fromId(dock.activeActor.id).genPavilionId()}</p>
+            <p>  - squareId: {ActorKey.fromId(dock.activeActor.id).genSquareId()}</p>
+            <p>  - stationId: {ActorKey.fromId(dock.activeActor.id).genStationId()}</p>
           </pre>
         </>
       )}
