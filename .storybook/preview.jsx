@@ -31,7 +31,8 @@ export const parameters = {
   },
 };
 
-export const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+const development = process.env.NODE_ENV !== 'production';
+const darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 const theme = darkMode ? darkTheme : lightTheme;
 
 export const decorators = [
@@ -42,8 +43,8 @@ export const decorators = [
         <AppContext.Provider>
           <ThemeProvider theme={theme}>
             <dialogUtil.Viewer renderDialog={(params) => (<DialogView {...params} />)}/>
-            <AuthProvider development devauth={{...devauth}}>
-              <DockProvider development devdock={{...devdock}}>
+            <AuthProvider development={development} devauth={{...devauth}}>
+              <DockProvider development={development} devdock={{...devdock}}>
                 <Story/>
               </DockProvider>
             </AuthProvider>
