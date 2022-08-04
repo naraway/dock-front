@@ -31,15 +31,9 @@ module.exports = ({
       },
       server: {
         proxy: {
-          '/api/checkpoint': {
-            target: 'http://localhost:9000',
-            rewrite: path => path.replace('/api/checkpoint', '/'),
-            changeOrigin: true,
-            configure: proxy => proxy.on('proxyReq', proxy => console.log(`-> ${proxy.protocol}//${proxy.host}${proxy.path}`)),
-          },
-          '/api/town': {
-            target: 'http://localhost:9000',
-            rewrite: path => path.replace('/api/town', '/'),
+          '/api': {
+            target: 'http://nara-way',
+            rewrite: path => path.replace('/api', '/api'),
             crossOrigin: true,
             configure: proxy => proxy.on('proxyReq', proxy => console.log(`-> ${proxy.protocol}//${proxy.host}${proxy.port ? ':' + proxy.port : ''}${proxy.path}`)),
           },
