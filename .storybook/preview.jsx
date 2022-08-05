@@ -4,7 +4,7 @@ import {AppContext, dialogUtil} from "@nara-way/prologue";
 import {AuthProvider, DockProvider} from "@nara-way/dock";
 import {darkTheme, lightTheme} from './config/theme';
 import {default as DialogView} from './config/dialog';
-import {devauth, devdock} from './config/dev';
+import {devauth, devdock, devinterceptors} from './config/dev';
 import {ThemeProvider} from "@mui/material";
 
 configure({
@@ -43,7 +43,7 @@ export const decorators = [
         <AppContext.Provider>
           <ThemeProvider theme={theme}>
             <dialogUtil.Viewer renderDialog={(params) => (<DialogView {...params} />)}/>
-            <AuthProvider development={development} devauth={{...devauth}}>
+            <AuthProvider development={development} devauth={{...devauth}} interceptors={devinterceptors}>
               <DockProvider development={development} devdock={{...devdock}}>
                 <Story/>
               </DockProvider>

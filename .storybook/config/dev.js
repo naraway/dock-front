@@ -34,10 +34,15 @@ export const devdock = {
   activeActor: dock.cinerooms[0].stages[0].actor,
   activeKollection: dock.cinerooms[0].stages[0].kollections[0].kollection,
   activeKollectionRoles: dock.cinerooms[0].stages[0].kollections[0].kollectionRoles.map(role => role.code),
-  // activeDramaRoles: dock.cinerooms[0].stages[0].kollections[0].kollectionRoles[0].dramaRoles.map(role => role.code),
-  activeDramaRoles: ['product:manager', 'order:manager'],
-  activeDramaRoleMap: {
-    product: ['manager'],
-    order: ['manager']
-  }
+  activeDramaRoles: dock.cinerooms[0].stages[0].kollections[0].kollectionRoles[0].dramaRoles.map(role => role.code),
 };
+
+export const devinterceptors = [{
+  request: {
+    onFulfilled: (config) => {
+      const roles = ['personalUser', 'teamAdmin', 'teamUser'].join(',');
+      config.headers = {...(config.headers || {}), roles};
+      return config;
+    },
+  },
+}];

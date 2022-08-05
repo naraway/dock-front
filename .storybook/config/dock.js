@@ -24,8 +24,8 @@ export const dock = {
           dramaRoles: [
             {code: 'product:manager', defaultRole: false, dramaId: 'product'},
             {code: 'order:manager', defaultRole: true, dramaId: 'order'}],
-        }]
-      }]
+        }],
+      }],
     }, {
       actor: {id: '1@1:1:1:1-2', name: 'Kim Nara'},
       stage: {id: '1:1:1:1-2', name: 'Stock'},
@@ -45,8 +45,8 @@ export const dock = {
           dramaRoles: [
             {code: 'product:manager', defaultRole: false, dramaId: 'product'},
             {code: 'order:manager', defaultRole: true, dramaId: 'order'}],
-        }]
-      }]
-    }]
-  }]
+        }],
+      }],
+    }],
+  }],
 };
