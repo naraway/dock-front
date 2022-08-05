@@ -40,7 +40,7 @@ export const devdock = {
 export const devinterceptors = [{
   request: {
     onFulfilled: (config) => {
-      const roles = ['personalUser', 'teamAdmin', 'teamUser'].join(',');
+      const roles = ['director', 'user', 'pavilion-admin', 'cineroom-admin'].join(',');
       config.headers = {...(config.headers || {}), roles};
       return config;
     },
