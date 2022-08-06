@@ -2,6 +2,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typogra
 import {DialogNoticeType} from "@nara/prologue";
 import {CheckCircleOutlined, ErrorOutlineOutlined, HelpOutlineOutlined, InfoOutlined} from "@mui/icons-material";
 import * as React from "react";
+import {useEffect} from "react";
 
 const DialogView = ({index, dialog, onClose}) => {
   useEffect(() => {
