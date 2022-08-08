@@ -70,6 +70,27 @@ class DockStorage {
     this._loaded.remove();
   }
 
+  empty(): void {
+    this.setActiveDock({} as ActiveDockRdo);
+    this.setLoaded(true);
+    this._defaultStage.remove();
+    this._defaultFirst.remove();
+    this._activeCitizen.remove();
+    this._activePavilion.remove();
+    this._activeAudience.remove();
+    this._activeCineroom.remove();
+    this._activeActor.remove();
+    this._activeStage.remove();
+    this._activeKollection.remove();
+    this._activeKollectionRoles.remove();
+    this._activeDramaRoles.remove();
+    this._baseActor.remove();
+    this._baseStage.remove();
+    this._baseKollection.remove();
+    this._baseKollectionRoles.remove();
+    this._baseDramaRoles.remove();
+  }
+
   setDock(
     activeDock: ActiveDockRdo,
     defaultStage: ActiveInfo,
@@ -112,13 +133,33 @@ class DockStorage {
   }
 
   async findActiveDockWithCitizenId(citizenId: string): Promise<ActiveDockRdo> {
-    const activeDock = await this.dockFlowStateKeeper.findActiveDockWithCitizenId(citizenId);
-    return await this.findActiveDock(activeDock);
+    try {
+      const activeDock = await this.dockFlowStateKeeper.findActiveDockWithCitizenId(citizenId);
+      if (activeDock) {
+        return await this.findActiveDock(activeDock);
+      } else {
+        this.empty();
+        return ActiveDockRdo.new();
+      }
+    } catch (e) {
+      this.empty();
+      return ActiveDockRdo.new();
+    }
   }
 
   async findActiveDockWithEmailAndPavilionId(email: string, pavilionId: string): Promise<ActiveDockRdo> {
-    const activeDock = await this.dockFlowStateKeeper.findAvailableDockWithEmailAndPavilionId(email, pavilionId);
-    return await this.findActiveDock(activeDock);
+    try {
+      const activeDock = await this.dockFlowStateKeeper.findAvailableDockWithEmailAndPavilionId(email, pavilionId);
+      if (activeDock) {
+        return await this.findActiveDock(activeDock);
+      } else {
+        this.empty();
+        return ActiveDockRdo.new();
+      }
+    } catch (e) {
+      this.empty();
+      return ActiveDockRdo.new();
+    }
   }
 
   async findActiveDock(activeDock: ActiveDockRdo | null): Promise<ActiveDockRdo> {
