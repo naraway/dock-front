@@ -253,13 +253,17 @@ const DockProvider = (props: {
     //
     if (!development && auth.loggedIn && auth.citizen && !ref.current?.loaded) {
       const dockStorage = ref.current;
+
       const email = auth.citizen?.email;
       const cineroomId = auth.cineroomIds ? auth.cineroomIds[0][0] : '1:1:1';
+
       if (email && cineroomId) {
         dockStorage?.findActiveDockWithEmailAndPavilionId(
           email,
           cineroomId.substring(0, cineroomId.lastIndexOf(':')),
         ).then(() => setDock({...dock}));
+      } else {
+        dockStorage?.empty();
       }
     }
   };
