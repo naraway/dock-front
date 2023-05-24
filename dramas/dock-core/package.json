@@ -1,6 +1,6 @@
 {
   "name": "@nara-way/dock-core",
-  "version": "4.1.0-0",
+  "version": "4.1.0-1",
   "description": "NARA Way Dock",
   "author": "NARA Way <naraway@nextree.io> (http://naraway.io)",
   "license": "UNLICENSED",
@@ -23,7 +23,7 @@
     "nara-update": "ncu -u -x *dock* /@nara/"
   },
   "dependencies": {
-    "@nara-way/accent": "^4.1.0-14",
+    "@nara-way/accent": "^4.1.0",
     "axios": "^1"
   },
   "browserslist": {

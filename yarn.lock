@@ -1572,6 +1572,11 @@
   resolved "http://registry.naraway.io/repository/npm-naraway-releases/@nara-way/accent/-/accent-4.0.1.tgz#680fea99953a6aab77152a91157b026ee356db1e"
   integrity sha512-uuh98NzKdQsh/ilcKeW+QxezCH/LARIuQEDQg5lhj54IogUwkCrILQ1NtoF6Do5svHE4W+0fGfmSvZtJFw78hA==
 
+"@nara-way/accent@^4.1.0":
+  version "4.1.0-15"
+  resolved "http://registry.naraway.io/repository/npm-naraway-releases/@nara-way/accent/-/accent-4.1.0-15.tgz#1aa1f307ece45d10c6d894ba7c243d2a637fd34e"
+  integrity sha512-kAcUWzNtQBb78hrVHe+4vKYIUt6cJmKnua5QAU2BEpoPOcu4RVhIYlzG6VwM1eHLFd/0AfmC7Hr6IhQTmU6YYg==
+
 "@nara-way/accent@^4.1.0-14":
   version "4.1.0-14"
   resolved "http://registry.naraway.io/repository/npm-naraway-releases/@nara-way/accent/-/accent-4.1.0-14.tgz#fa01bd12d7e8184ef223d3688672647ead734246"
@@ -1581,6 +1586,14 @@
   version "4.1.0-12"
   resolved "http://registry.naraway.io/repository/npm-naraway-releases/@nara-way/accent/-/accent-4.1.0-12.tgz#b64ffe6fd4fb0c277983b9cb3efff7fe17c8ca56"
   integrity sha512-qSPS9zxvNYWtSK37cyQJ2jz/RgWtbNrgWPEqH1w98cnHyZNIewpvzt4sgX9xh3o6gDJmbvNOvY7qUIrVl4Znhg==
+
+"@nara-way/checkpoint-core@^4.1.0":
+  version "4.1.0"
+  resolved "http://registry.naraway.io/repository/npm-naraway-releases/@nara-way/checkpoint-core/-/checkpoint-core-4.1.0.tgz#3e0d4f70e40f08127a03a60493ffe26013c42412"
+  integrity sha512-SsW5jqoARsbQtrTvM/0zrKVwfG07EIiSd5vIWv6jd6XNcWvDEGUFFLR0fLY45x923fTl6nbgYrK6vw7uN9GWuQ==
+  dependencies:
+    "@nara-way/accent" "^4.1.0"
+    axios "^1"
 
 "@nara-way/checkpoint-core@^4.1.0-5":
   version "4.1.0-5"
@@ -1602,7 +1615,7 @@
     queue-typescript "^1.0.1"
     react "^18"
 
-"@nara-way/herald-core@^4.1.0-2":
+"@nara-way/herald-core@^4.1.0":
   version "4.1.0-2"
   resolved "http://registry.naraway.io/repository/npm-naraway-releases/@nara-way/herald-core/-/herald-core-4.1.0-2.tgz#979d2488228c09beefe1b782376bc4c3901d3748"
   integrity sha512-EM49eWtVg/ZMBDbui1AoPBBXchwVZKapQ0kU4KMPCqYpqDZKwRgq8JmicnvRGek30RMUEPUBv4WodiLBnY1T1w==
@@ -1614,7 +1627,7 @@
     queue-typescript "^1.0.1"
     react "^18"
 
-"@nara-way/herald-ui@^4.1.0-2":
+"@nara-way/herald-ui@^4.1.0":
   version "4.1.0-2"
   resolved "http://registry.naraway.io/repository/npm-naraway-releases/@nara-way/herald-ui/-/herald-ui-4.1.0-2.tgz#e0bd6e43ed427fc065653f0ebec8a14ccd8c1f24"
   integrity sha512-3cwHBoD1HABL1tFGUHXvKztTN1zp/sJrGVH+Ci9jZYVvBcLWfmgaXIiR8PU94Kqwauoad7uKt9ZhUavWtMS+UQ==
