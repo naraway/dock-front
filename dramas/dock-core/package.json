@@ -1,0 +1,41 @@
+{
+  "name": "@nara-way/dock-core",
+  "version": "4.1.0-0",
+  "description": "NARA Way Dock",
+  "author": "NARA Way <naraway@nextree.io> (http://naraway.io)",
+  "license": "UNLICENSED",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "types": "./dist/@types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "storybook": "storybook dev -p 4000",
+    "build-storybook": "storybook build -s public",
+    "build": "vite build && ttsc -p src/tsconfig.json",
+    "nara-update": "ncu -u -x *dock* /@nara/"
+  },
+  "dependencies": {
+    "@nara-way/accent": "^4.1.0-14",
+    "axios": "^1"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

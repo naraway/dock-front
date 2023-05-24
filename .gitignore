@@ -1,33 +1,32 @@
 # Dependencies
-/node_modules
+**/node_modules
 
 # Lock file
-yarn.lock
-package-lock.json
+#yarn.lock
+**/package-lock.json
 
 # Bundled file
-/lib
-/comp
-/dist
-/storybook-static
+**/dist
+**/storybook-static
 
 # Env file
-.env.local
-.env.test.local
-.env.development.local
-.env.production.local
+**/.env.local
+**/.env.test.local
+**/.env.development.local
+**/.env.production.local
 
 # Log file
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
 
 # Idea
 .idea
 *.iml
 
 # Misc
-.nara
-.studio
-.DS_Store
-Thumbs.db
+**/.turbo
+**/.nara
+**/.studio
+**/.DS_Store
+**/Thumbs.db

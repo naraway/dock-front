@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "composite": true,
+    "paths": { "~/*": ["*"] }
+  },
+  "include": ["src"],
+  "exclude": ["storybook", "node_modules"]
+}

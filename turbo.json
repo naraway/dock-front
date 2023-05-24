@@ -1,0 +1,18 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "storybook-static/**"]
+    },
+    "build-storybook": {
+      "dependsOn": ["^build-storybook"]
+    },
+    "nara-update": {
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    }
+  }
+}
