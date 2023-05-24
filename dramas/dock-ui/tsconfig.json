@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "src",
+    "composite": true,
+    "paths": { "~/*": ["*"], "@nara-way/dock-core": ["../dock-core/src/*"] }
+  },
+  "references": [{ "path": "../dock-core", "prepend": true }],
+  "include": ["src"],
+  "exclude": ["storybook", "node_modules"]
+}
