@@ -2,8 +2,27 @@
   "name": "@nara-way/dock-ui",
   "version": "4.1.0-1",
   "description": "NARA Way Dock",
+  "keywords": [
+    "nara",
+    "naraway",
+    "dock",
+    "context",
+    "session"
+  ],
   "author": "NARA Way <naraway@nextree.io> (http://naraway.io)",
-  "license": "UNLICENSED",
+  "homepage": "<https://naraway.io>",
+  "repository": {
+    "type": "git",
+    "url": "<https://github.com/naraway/checkpoint-front.git>",
+    "web": "<https://github.com/naraway/checkpoint-front>"
+  },
+  "license": {
+    "type": "Apache-2.0",
+    "url": "<https://opensource.org/licenses/apache2.0.php>"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
   "exports": {
